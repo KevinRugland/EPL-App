@@ -481,9 +481,10 @@ select {
     <div class="success">
       <div class="success-icon">✅</div>
       <div class="success-title">EPL er klar!</div>
-      <div class="success-sub">Åpne dokumentet for å lagre som PDF eller sende på e-post.</div>
+      <div class="success-sub">Åpne dokumentet for å lagre som PDF.</div>
       <div class="success-btns">
         <button class="btn btn-primary" id="btnApnePDF">📄 Åpne EPL-dokument</button>
+        <button class="btn" id="btnTilbakeEndringer">← Gjør endringer</button>
         <button class="btn" id="btnNyEPL">+ Ny EPL</button>
       </div>
     </div>
@@ -542,6 +543,10 @@ document.getElementById('btnNext').addEventListener('click', goNext);
 document.getElementById('btnBack').addEventListener('click', goBack);
 document.getElementById('btnApnePDF').addEventListener('click', showPDF);
 document.getElementById('btnNyEPL').addEventListener('click', resetAll);
+document.getElementById('btnTilbakeEndringer').addEventListener('click', function() {
+  curStep = TOTAL; // Gå tilbake til steg 4 (gjennomgang)
+  updateUI();
+});
 document.getElementById('btnPrint').addEventListener('click', doPrint);
 document.getElementById('btnLukkPDF').addEventListener('click', hidePDF);
 
@@ -880,44 +885,10 @@ function genererEPL() {
 }
 
 /* ════════════════════════════════════════
-   E-POST
-════════════════════════════════════════ */
-function oppdaterEpostlenke() {
-  const n       = parseInt(v('antallBilder')) || 3;
-  const mottaker = v('mottakerEpost');
-  const subject  = encodeURIComponent(`EPL ${v('eplNr')} – ${v('tittel')}`);
-
-  let stegTekst = '';
-  for (let i = 1; i <= n; i++) {
-    const cap = imgData['cap' + i] || '';
-    if (cap) stegTekst += `\nSteg ${i}:\n${cap}\n`;
-  }
-
-  const body = encodeURIComponent(
-    `Ny Ettpunktsleksjon er registrert og klar for gjennomgang.\n\n` +
-    `──────────────────────────────\nEPL-INFORMASJON\n──────────────────────────────\n` +
-    `EPL-nummer:  ${v('eplNr')}\n` +
-    `Tittel:      ${v('tittel')}\n` +
-    `Maskin:      ${v('maskin') || '—'}\n` +
-    `Beskrivelse: ${v('beskrivelse') || '—'}\n\n` +
-    `Laget av:    ${v('lagetAv')} (${v('signLaget') || '—'})\n` +
-    `Dato:        ${v('datoOpprettet')}\n` +
-    `Godkjent av: (fylles ut av godkjenner)\n` +
-    `──────────────────────────────\nINSTRUKSJONER\n──────────────────────────────\n` +
-    (stegTekst || '(Ingen instruksjonstekst registrert)') +
-    `\n──────────────────────────────\n` +
-    `Merk: Bilder må legges ved manuelt om ønskelig.`
-  );
-
-  document.getElementById('emailLink').href = `mailto:${mottaker}?subject=${subject}&body=${body}`;
-}
-
-/* ════════════════════════════════════════
    PDF OG PRINT
 ════════════════════════════════════════ */
 function showPDF() {
   genererEPL();
-  oppdaterEpostlenke();
   document.getElementById('pdfScreen').classList.add('visible');
 }
 
