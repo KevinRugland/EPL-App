@@ -207,13 +207,18 @@ select {
    EPL-DOKUMENT
 ════════════════════════════════════════ */
 .epl-doc        { font-family: Arial, Helvetica, sans-serif; border: 2px solid #000; font-size: 11px; color: #000; background: white; }
-.epl-header     { display: grid; grid-template-columns: 1fr auto; border-bottom: 2px solid #000; }
-.epl-title-block { padding: 8px 12px; display: flex; align-items: center; }
-.epl-main-title  { font-size: 20px; font-weight: 900; font-family: Arial Black, Arial, sans-serif; }
-.epl-right-block { border-left: 2px solid #000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px 12px; min-width: 150px; gap: 4px; }
-.epl-epl-nr-label { font-size: 8px; color: #555; }
-.epl-epl-nr       { font-size: 13px; font-weight: 700; }
-.epl-logo-placeholder { border: 2px dashed #aaa; padding: 5px 10px; text-align: center; color: #aaa; font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 2px; background: #fafafa; min-width: 90px; }
+.epl-header      { display: grid; grid-template-columns: 1fr auto; border-bottom: 2px solid #000; }
+.epl-title-block { padding: 8px 12px; display: flex; align-items: center; gap: 0; border-right: none; }
+.epl-main-title  { font-size: 20px; font-weight: 900; font-family: Arial Black, Arial, sans-serif; flex: 1; }
+
+/* EPL-nummer i egen boks ved siden av tittelen */
+.epl-nr-block    { border-left: 1px solid #000; padding: 4px 10px; display: flex; flex-direction: column; justify-content: center; min-width: 200px; }
+.epl-epl-nr-label { font-size: 8px; color: #555; margin-bottom: 2px; }
+.epl-epl-nr      { font-size: 13px; font-weight: 700; }
+
+/* Logoboks alene til høyre */
+.epl-right-block { border-left: 2px solid #000; display: flex; align-items: center; justify-content: center; padding: 4px 8px; min-width: 130px; background: #1a1a1a; }
+.epl-logo        { width: 110px; height: auto; display: block; }
 
 .epl-body-with-meta { display: grid; grid-template-columns: 1fr 155px; }
 .epl-meta           { border-bottom: 1px solid #000; }
@@ -242,30 +247,51 @@ select {
 
 /* Layout: rutenett */
 .epl-layout-grid        { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.epl-img-cell img       { width: 100%; height: 160px; object-fit: cover; display: block; border: 1px solid #ccc; }
+.epl-img-cell img       { width: 100%; max-height: 220px; object-fit: contain; display: block; border: 1px solid #ccc; background: #f9f9f9; }
 .epl-img-cell .epl-cap  { font-size: 10px; text-align: center; margin-top: 4px; line-height: 1.4; }
 
 /* Layout: side om side */
 .epl-layout-side          { display: flex; flex-direction: column; gap: 8px; }
-.epl-side-row             { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: center; }
-.epl-side-row img         { width: 100%; height: 150px; object-fit: cover; display: block; border: 1px solid #ccc; }
+.epl-side-row             { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: start; }
+.epl-side-row img         { width: 100%; max-height: 280px; object-fit: contain; display: block; border: 1px solid #ccc; background: #f9f9f9; }
 .epl-side-row .epl-side-text { font-size: 10px; line-height: 1.5; padding: 4px; }
 
 /* Layout: stablet */
-.epl-layout-stack       { display: flex; flex-direction: column; gap: 10px; }
-.epl-stack-item img     { width: 100%; max-height: 170px; object-fit: cover; display: block; border: 1px solid #ccc; }
+.epl-layout-stack        { display: flex; flex-direction: column; gap: 10px; }
+.epl-stack-item img      { width: 100%; max-height: 320px; object-fit: contain; display: block; border: 1px solid #ccc; background: #f9f9f9; }
 .epl-stack-item .epl-cap { font-size: 10px; margin-top: 4px; line-height: 1.4; text-align: center; }
 
-.no-img-box { height: 150px; background: #eee; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #aaa; }
+.no-img-box { height: 120px; background: #eee; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #aaa; }
 
 /* ════════════════════════════════════════
-   PRINT
+   PRINT — A4 stående
 ════════════════════════════════════════ */
 @media print {
   body > *:not(#pdfScreen) { display: none !important; }
   #pdfScreen { display: block !important; position: static !important; background: none !important; }
   .pdf-toolbar, .pdf-info-bar { display: none !important; }
   .pdf-scroll-area { overflow: visible !important; padding: 0 !important; }
+
+  @page {
+    size: A4 portrait;
+    margin: 12mm 12mm 12mm 12mm;
+  }
+
+  /* Sørg for at EPL-dokumentet fyller A4-bredden */
+  .epl-doc {
+    width: 100% !important;
+    font-size: 10px !important;
+  }
+
+  /* Bilder skal aldri bryte over sideskift */
+  .epl-img-cell,
+  .epl-side-row,
+  .epl-stack-item { break-inside: avoid; }
+
+  /* Begrens bildehøyde for print slik at de passer på siden */
+  .epl-img-cell img,
+  .epl-side-row img  { max-height: 180px !important; }
+  .epl-stack-item img { max-height: 260px !important; }
 }
 </style>
 </head>
@@ -599,6 +625,9 @@ function byggBildeblokker() {
         <span class="img-block-lbl">Steg ${i}</span>
         <span class="img-opt">Valgfritt</span>
       </div>
+      <div class="hint-text" style="margin:10px 12px 0;">
+        📱 Tips: Ta bildet i <strong>stående (portrett)</strong> orientasjon for best resultat i dokumentet.
+      </div>
       <div class="upload-zone" id="zone${i}">
         <input type="file" accept="image/*" capture="environment" data-steg="${i}">
         <div class="upload-icon">📷</div>
@@ -645,6 +674,9 @@ function fjernBilde(n) {
   const zone = document.getElementById('zone' + n);
   zone.style.cssText = '';
   zone.innerHTML = `
+    <div class="hint-text" style="margin:10px 12px 0;">
+      📱 Tips: Ta bildet i <strong>stående (portrett)</strong> orientasjon for best resultat i dokumentet.
+    </div>
     <input type="file" accept="image/*" capture="environment" data-steg="${n}">
     <div class="upload-icon">📷</div>
     <div class="upload-txt">
@@ -758,11 +790,13 @@ function genererEPL() {
     <div class="epl-header">
       <div class="epl-title-block">
         <div class="epl-main-title">ETTPUNKTSLEKSJON</div>
+        <div class="epl-nr-block">
+          <div class="epl-epl-nr-label">EPL nr.</div>
+          <div class="epl-epl-nr">${v('eplNr')}</div>
+        </div>
       </div>
       <div class="epl-right-block">
-        <div class="epl-epl-nr-label">EPL nr.</div>
-        <div class="epl-epl-nr">${v('eplNr')}</div>
-        <div class="epl-logo-placeholder">DIN LOGO HER</div>
+        <img class="epl-logo" src="data:image/webp;base64,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" alt="Logo">
       </div>
     </div>
     <div class="epl-meta">
