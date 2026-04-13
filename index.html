@@ -226,7 +226,7 @@ select {
 
 /* Logoboks alene til høyre */
 .epl-right-block { border-left: 2px solid #000; display: flex; align-items: center; justify-content: center; padding: 6px 12px; min-width: 130px; background: white; }
-.epl-logo        { width: 110px; height: auto; display: block; }
+.epl-logo        { width: 140px; height: auto; display: block; }
 
 .epl-body-with-meta { display: grid; grid-template-columns: 1fr 155px; }
 .epl-meta           { border-bottom: 1px solid #000; }
@@ -289,15 +289,11 @@ select {
   .epl-doc {
     width: 100% !important;
     font-size: 10px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    min-height: calc(297mm - 30mm) !important;
-    page-break-inside: avoid;
+    display: block !important;
   }
 
-  /* Innholdsseksjonen fyller gjenværende plass */
+  /* Innholdsseksjonen */
   .epl-content {
-    flex: 1 !important;
     padding: 10px !important;
   }
 
