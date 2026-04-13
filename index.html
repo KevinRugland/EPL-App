@@ -338,13 +338,13 @@ select {
     <div class="step-hdr">
       <div class="step-tag">Steg 01 / 04</div>
       <div class="step-title">Grunnleggende info</div>
-      <div class="step-sub">Fyll ut EPL-nummer, tittel og referanser.</div>
+      <div class="step-sub">Fyll ut tittel og referanser. EPL-nummer fylles ut av godkjenner.</div>
     </div>
 
     <div class="field">
-      <label>EPL-nummer <span class="req">*</span></label>
+      <label>EPL-nummer</label>
       <input type="text" id="eplNr" placeholder="Eks: B09.09-001" autocomplete="off">
-      <div class="hint-text">💡 Refererer til punktet i arbeidsbeskrivelsen hvor oppgaven hører til. Eks: B09 = kapittel B, punkt 09.</div>
+      <div class="hint-text">✍️ Valgfritt — fylles ut av godkjenner. Refererer til punktet i arbeidsbeskrivelsen hvor oppgaven hører til.</div>
     </div>
 
     <div class="row2">
@@ -614,7 +614,7 @@ function goBack() {
    VALIDERING
 ════════════════════════════════════════ */
 function validateSteg1() {
-  const pakrevde = ['eplNr', 'tittel', 'lagetAv', 'datoOpprettet'];
+  const pakrevde = ['tittel', 'lagetAv', 'datoOpprettet'];
   for (let i = 0; i < pakrevde.length; i++) {
     const el = document.getElementById(pakrevde[i]);
     if (!el || !el.value.trim()) {
