@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>EPL – Ettpunktsleksjon</title>
+<style>
+/* ════════════════════════════════════════
+   VARIABLER OG RESET
+════════════════════════════════════════ */
+:root {
+  --red:    #cc1515;
+  --dark:   #1a1a1a;
+  --mid:    #666;
+  --border: #bbb;
+  --light:  #ddd;
+  --bg:     #efefec;
+  --font:   -apple-system, 'Helvetica Neue', Arial, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { font-size: 16px; }
+body { background: var(--bg); font-family: var(--font); color: var(--dark); min-height: 100vh; padding-bottom: 80px; -webkit-text-size-adjust: 100%; }
+
+/* ════════════════════════════════════════
+   TOPBAR OG PROGRESS
+════════════════════════════════════════ */
+.topbar { background: var(--dark); color: white; height: 52px; padding: 0 16px; display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 200; }
+.topbar-brand { font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red); white-space: nowrap; }
+.topbar-sep   { width: 1px; height: 20px; background: #444; flex-shrink: 0; }
+.topbar-title { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topbar-step  { margin-left: auto; font-size: 11px; color: #888; white-space: nowrap; flex-shrink: 0; }
+
+.progress      { height: 3px; background: #2a2a2a; }
+.progress-fill { height: 100%; background: var(--red); transition: width 0.35s ease; width: 0%; }
+
+/* ════════════════════════════════════════
+   LAYOUT
+════════════════════════════════════════ */
+.wrap { width: 100%; max-width: 600px; margin: 0 auto; padding: 0 14px; }
+
+/* ════════════════════════════════════════
+   STEG-ANIMASJON
+════════════════════════════════════════ */
+.step       { display: none; }
+.step.active { display: block; animation: fadeup 0.2s ease; }
+@keyframes fadeup {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.step-hdr   { padding: 20px 0 14px; border-bottom: 2px solid var(--dark); margin-bottom: 18px; }
+.step-tag   { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--red); margin-bottom: 4px; }
+.step-title { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
+.step-sub   { font-size: 13px; color: var(--mid); margin-top: 4px; line-height: 1.45; }
+
+/* ════════════════════════════════════════
+   SKJEMA
+════════════════════════════════════════ */
+.field       { margin-bottom: 14px; }
+.field label { display: block; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); margin-bottom: 5px; }
+.req         { color: var(--red); }
+
+.hint-text {
+  font-size: 11px; color: var(--mid); margin-top: 5px;
+  line-height: 1.4; font-style: italic;
+  padding: 6px 8px; background: #f5f4f0;
+  border-left: 3px solid var(--red); border-radius: 0 2px 2px 0;
+}
+
+input[type=text],
+input[type=date],
+input[type=email],
+textarea,
+select {
+  width: 100%; border: 1.5px solid var(--border); border-radius: 4px;
+  padding: 12px; font-family: var(--font); font-size: 16px;
+  color: var(--dark); background: white; outline: none;
+  -webkit-appearance: none; appearance: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(204,21,21,0.1);
+}
+textarea { min-height: 72px; resize: vertical; line-height: 1.5; }
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px;
+}
+
+.row2    { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.divider { height: 1px; background: var(--light); margin: 16px 0; }
+.sec-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--light); }
+
+/* ════════════════════════════════════════
+   BILDE-BLOKKER
+════════════════════════════════════════ */
+.img-blocks    { display: flex; flex-direction: column; gap: 18px; }
+.img-block     { background: white; border: 1.5px solid var(--border); border-radius: 6px; overflow: hidden; }
+.img-block-head { background: var(--dark); color: white; padding: 10px 13px; display: flex; align-items: center; gap: 10px; }
+.img-block-num  { background: var(--red); color: white; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 3px; }
+.img-block-lbl  { font-size: 14px; font-weight: 600; }
+.img-opt        { margin-left: auto; font-size: 11px; color: #888; }
+
+.upload-zone { margin: 12px; border: 2px dashed var(--border); border-radius: 4px; padding: 28px 16px; text-align: center; cursor: pointer; position: relative; background: #fafafa; transition: all 0.15s; }
+.upload-zone:active { border-color: var(--red); background: #fff5f5; }
+.upload-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; font-size: 0; }
+.upload-icon { font-size: 32px; margin-bottom: 8px; }
+.upload-txt  { font-size: 14px; color: var(--mid); line-height: 1.5; }
+.upload-txt strong { display: block; color: var(--red); font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+
+.img-preview { width: 100%; max-height: 220px; object-fit: cover; display: block; }
+.img-remove  { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px; font-size: 13px; color: var(--red); cursor: pointer; border-top: 1px solid var(--light); background: #fff5f5; font-weight: 700; }
+.img-caption { padding: 0 12px 14px; }
+.img-caption label   { display: block; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); margin-bottom: 5px; }
+.img-caption textarea { min-height: 70px; font-size: 15px; }
+
+/* ════════════════════════════════════════
+   LAYOUT-VELGER
+════════════════════════════════════════ */
+.layout-picker { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px; }
+.layout-opt { border: 2px solid var(--border); border-radius: 6px; padding: 12px 8px; text-align: center; cursor: pointer; transition: all 0.15s; background: white; }
+.layout-opt:active  { border-color: var(--red); }
+.layout-opt.selected { border-color: var(--red); background: #fff5f5; }
+.lo-icon { font-size: 24px; margin-bottom: 5px; }
+.lo-lbl  { font-size: 12px; font-weight: 700; color: var(--dark); }
+.lo-sub  { font-size: 10px; color: var(--mid); margin-top: 3px; line-height: 1.3; }
+
+/* ════════════════════════════════════════
+   OPPSUMMERING
+════════════════════════════════════════ */
+.summary-table { width: 100%; border-collapse: collapse; background: white; border: 1.5px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 16px; }
+.summary-table tr          { border-bottom: 1px solid var(--light); }
+.summary-table tr:last-child { border-bottom: none; }
+.summary-table td          { padding: 9px 11px; font-size: 13px; vertical-align: top; }
+.summary-table td:first-child { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mid); background: #f8f8f6; border-right: 1px solid var(--light); white-space: nowrap; width: 110px; }
+
+.summary-img-grid  { display: flex; flex-direction: column; gap: 12px; }
+.summary-img-block { border: 1.5px solid var(--border); border-radius: 6px; overflow: hidden; background: white; }
+.summary-img-block img { width: 100%; max-height: 180px; object-fit: cover; }
+.summary-img-lbl   { padding: 6px 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mid); background: #f8f8f6; border-bottom: 1px solid var(--light); }
+.summary-img-cap   { padding: 9px 10px; font-size: 13px; color: var(--mid); font-style: italic; }
+.no-img            { padding: 16px; text-align: center; font-size: 13px; color: #bbb; }
+
+/* ════════════════════════════════════════
+   KNAPPER OG NAVIGASJON
+════════════════════════════════════════ */
+.nav-bar   { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1.5px solid var(--border); z-index: 200; }
+.nav-inner { max-width: 600px; margin: 0 auto; padding: 10px 14px; display: flex; gap: 10px; }
+
+.btn {
+  flex: 1; padding: 14px 12px;
+  border: 1.5px solid var(--border); border-radius: 4px;
+  font-family: var(--font); font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: all 0.15s;
+  background: white; color: var(--dark);
+  -webkit-appearance: none; appearance: none;
+  text-align: center; min-height: 48px;
+  display: inline-flex; align-items: center; justify-content: center;
+  text-decoration: none;
+}
+.btn:active   { opacity: 0.8; }
+.btn-primary  { background: var(--red); border-color: var(--red); color: white; }
+.btn-back     { flex: 0 0 80px; font-size: 13px; }
+.btn-blue     { background: #1a5fb4; border-color: #1a5fb4; color: white; font-size: 14px; }
+.btn-full     { width: 100%; }
+.btn:disabled { opacity: 0.35; pointer-events: none; }
+
+/* ════════════════════════════════════════
+   TOAST-MELDING
+════════════════════════════════════════ */
+.toast {
+  position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+  background: var(--dark); color: white; padding: 10px 18px;
+  border-radius: 20px; font-size: 13px; font-weight: 600;
+  z-index: 9999; opacity: 0; transition: opacity 0.3s;
+  white-space: nowrap; pointer-events: none;
+}
+.toast.show { opacity: 1; }
+
+/* ════════════════════════════════════════
+   FULLFØRT-SKJERM
+════════════════════════════════════════ */
+.success       { text-align: center; padding: 48px 16px; }
+.success-icon  { font-size: 54px; margin-bottom: 14px; }
+.success-title { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+.success-sub   { font-size: 14px; color: var(--mid); line-height: 1.5; margin-bottom: 28px; }
+.success-btns  { display: flex; flex-direction: column; gap: 10px; max-width: 300px; margin: 0 auto; }
+
+/* ════════════════════════════════════════
+   PDF-SKJERM
+════════════════════════════════════════ */
+#pdfScreen {
+  display: none; position: fixed; inset: 0; z-index: 9999;
+  background: #333; flex-direction: column;
+  -webkit-overflow-scrolling: touch;
+}
+#pdfScreen.visible { display: flex; }
+
+.pdf-toolbar { background: var(--dark); padding: 10px 14px; display: flex; gap: 8px; flex-wrap: wrap; flex-shrink: 0; }
+.pdf-toolbar .btn { flex: 1; min-width: 100px; padding: 11px 10px; font-size: 13px; }
+
+.pdf-info-bar { background: #1a5fb4; color: white; padding: 8px 14px; font-size: 12px; font-weight: 600; flex-shrink: 0; text-align: center; line-height: 1.4; }
+
+.pdf-scroll-area { flex: 1; overflow-y: auto; padding: 16px; -webkit-overflow-scrolling: touch; }
+
+/* ════════════════════════════════════════
+   EPL-DOKUMENT
+════════════════════════════════════════ */
+.epl-doc        { font-family: Arial, Helvetica, sans-serif; border: 2px solid #000; font-size: 11px; color: #000; background: white; }
+.epl-header     { display: grid; grid-template-columns: 1fr auto; border-bottom: 2px solid #000; }
+.epl-title-block { padding: 8px 12px; display: flex; align-items: center; }
+.epl-main-title  { font-size: 20px; font-weight: 900; font-family: Arial Black, Arial, sans-serif; }
+.epl-right-block { border-left: 2px solid #000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px 12px; min-width: 150px; gap: 4px; }
+.epl-epl-nr-label { font-size: 8px; color: #555; }
+.epl-epl-nr       { font-size: 13px; font-weight: 700; }
+.epl-logo-placeholder { border: 2px dashed #aaa; padding: 5px 10px; text-align: center; color: #aaa; font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 2px; background: #fafafa; min-width: 90px; }
+
+.epl-body-with-meta { display: grid; grid-template-columns: 1fr 155px; }
+.epl-meta           { border-bottom: 1px solid #000; }
+.epl-meta-row       { display: grid; border-bottom: 1px solid #ccc; }
+.epl-meta-row:last-child { border-bottom: none; }
+.epl-meta-row.r1    { grid-template-columns: 2fr 1fr; }
+
+.epl-editable { min-width: 40px; min-height: 12px; outline: none; border-bottom: 1px dashed #aaa; cursor: text; display: inline-block; }
+.epl-editable:empty::before { content: attr(data-placeholder); color: #bbb; font-style: italic; }
+
+.epl-meta-cell            { padding: 3px 7px; border-right: 1px solid #ccc; font-size: 10px; }
+.epl-meta-cell:last-child { border-right: none; }
+.epl-meta-cell .cell-label { font-size: 8px; color: #777; margin-bottom: 1px; }
+.epl-meta-cell .cell-val   { font-weight: 600; font-size: 10px; }
+
+.epl-desc-row            { padding: 4px 7px; border-bottom: 2px solid #000; font-size: 10px; }
+.epl-desc-row .cell-label { font-size: 8px; color: #777; margin-bottom: 1px; }
+
+.epl-right-meta      { border-left: 2px solid #000; font-size: 9px; }
+.epl-right-meta-row  { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #ccc; padding: 3px 5px; gap: 4px; }
+.epl-right-meta-row:last-child { border-bottom: none; }
+.epl-right-meta-label { color: #777; font-size: 8px; }
+.epl-right-meta-val   { font-weight: 600; font-size: 9px; }
+
+.epl-content { padding: 8px; }
+
+/* Layout: rutenett */
+.epl-layout-grid        { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.epl-img-cell img       { width: 100%; height: 160px; object-fit: cover; display: block; border: 1px solid #ccc; }
+.epl-img-cell .epl-cap  { font-size: 10px; text-align: center; margin-top: 4px; line-height: 1.4; }
+
+/* Layout: side om side */
+.epl-layout-side          { display: flex; flex-direction: column; gap: 8px; }
+.epl-side-row             { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: center; }
+.epl-side-row img         { width: 100%; height: 150px; object-fit: cover; display: block; border: 1px solid #ccc; }
+.epl-side-row .epl-side-text { font-size: 10px; line-height: 1.5; padding: 4px; }
+
+/* Layout: stablet */
+.epl-layout-stack       { display: flex; flex-direction: column; gap: 10px; }
+.epl-stack-item img     { width: 100%; max-height: 170px; object-fit: cover; display: block; border: 1px solid #ccc; }
+.epl-stack-item .epl-cap { font-size: 10px; margin-top: 4px; line-height: 1.4; text-align: center; }
+
+.no-img-box { height: 150px; background: #eee; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #aaa; }
+
+/* ════════════════════════════════════════
+   PRINT
+════════════════════════════════════════ */
+@media print {
+  body > *:not(#pdfScreen) { display: none !important; }
+  #pdfScreen { display: block !important; position: static !important; background: none !important; }
+  .pdf-toolbar, .pdf-info-bar { display: none !important; }
+  .pdf-scroll-area { overflow: visible !important; padding: 0 !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <span class="topbar-brand" id="topbarBrand">EPL</span>
+  <div class="topbar-sep"></div>
+  <span class="topbar-title">Ettpunktsleksjon</span>
+  <span class="topbar-step" id="stepInd">Steg 1 av 4</span>
+</div>
+<div class="progress">
+  <div class="progress-fill" id="progFill"></div>
+</div>
+
+<div class="wrap">
+
+  <!-- ── STEG 1: Grunninfo ── -->
+  <div class="step active" id="step1">
+    <div class="step-hdr">
+      <div class="step-tag">Steg 01 / 04</div>
+      <div class="step-title">Grunnleggende info</div>
+      <div class="step-sub">Fyll ut EPL-nummer, tittel og referanser.</div>
+    </div>
+
+    <div class="field">
+      <label>EPL-nummer <span class="req">*</span></label>
+      <input type="text" id="eplNr" placeholder="Eks: B09.09-001" autocomplete="off">
+      <div class="hint-text">💡 Refererer til punktet i arbeidsbeskrivelsen hvor oppgaven hører til. Eks: B09 = kapittel B, punkt 09.</div>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Tittel <span class="req">*</span></label>
+        <input type="text" id="tittel" placeholder="Eks: Y-Filter og kulekran" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Maskin</label>
+        <select id="maskin">
+          <option value="">— Velg maskin —</option>
+          <option value="Liten Brannbil">Liten Brannbil</option>
+          <option value="Stor Brannbil">Stor Brannbil</option>
+          <option value="Tank Brannbil">Tank Brannbil</option>
+          <option value="Spesial Brannbil">Spesial Brannbil</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Beskrivelse</label>
+      <textarea id="beskrivelse" placeholder="Kort beskrivelse av hva EPL-en omhandler..."></textarea>
+    </div>
+
+    <div class="divider"></div>
+    <div class="sec-lbl">Laget av</div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Navn <span class="req">*</span></label>
+        <input type="text" id="lagetAv" placeholder="Navn" autocomplete="name">
+      </div>
+      <div class="field">
+        <label>Dato <span class="req">*</span></label>
+        <input type="date" id="datoOpprettet">
+      </div>
+    </div>
+    <div class="field">
+      <label>Signatur / initialer</label>
+      <input type="text" id="signLaget" placeholder="Eks: KGR" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>Send EPL til (e-post) <span class="req">*</span></label>
+      <input type="email" id="mottakerEpost" placeholder="godkjenner@bedrift.no" autocomplete="email" inputmode="email">
+      <div class="hint-text">📧 E-postadressen som skal motta EPL-en for godkjenning.</div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="sec-lbl">Godkjent av</div>
+    <div class="hint-text" style="margin-bottom:12px;">✍️ Fylles ut av godkjenner — disse feltene kan stå tomme og fylles inn digitalt i PDF på PC.</div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Navn</label>
+        <input type="text" id="godkjentAv" placeholder="Fylles ut av godkjenner" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Dato</label>
+        <input type="date" id="datoGodkjent">
+      </div>
+    </div>
+    <div class="field">
+      <label>Signatur / initialer</label>
+      <input type="text" id="signGodkjent" placeholder="Fylles ut av godkjenner" autocomplete="off">
+    </div>
+  </div>
+
+  <!-- ── STEG 2: Layout ── -->
+  <div class="step" id="step2">
+    <div class="step-hdr">
+      <div class="step-tag">Steg 02 / 04</div>
+      <div class="step-title">Velg layout</div>
+      <div class="step-sub">Hvordan skal bilder og tekst vises i EPL-dokumentet?</div>
+    </div>
+
+    <div class="layout-picker">
+      <div class="layout-opt selected" data-layout="grid">
+        <div class="lo-icon">⊞</div>
+        <div class="lo-lbl">Rutenett</div>
+        <div class="lo-sub">Bilder i grid, tekst under hvert bilde</div>
+      </div>
+      <div class="layout-opt" data-layout="side">
+        <div class="lo-icon">◫</div>
+        <div class="lo-lbl">Side om side</div>
+        <div class="lo-sub">Bilde til venstre, tekst til høyre</div>
+      </div>
+      <div class="layout-opt" data-layout="stack">
+        <div class="lo-icon">☰</div>
+        <div class="lo-lbl">Stablet</div>
+        <div class="lo-sub">Bilder nedover, tekst under hvert bilde</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="sec-lbl">Antall bildesteg</div>
+    <div class="field">
+      <label>Antall bilder <span class="req">*</span></label>
+      <select id="antallBilder">
+        <option value="2">2 bilder</option>
+        <option value="3" selected>3 bilder</option>
+        <option value="4">4 bilder</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- ── STEG 3: Bilder ── -->
+  <div class="step" id="step3">
+    <div class="step-hdr">
+      <div class="step-tag">Steg 03 / 04</div>
+      <div class="step-title">Bilder og instruksjoner</div>
+      <div class="step-sub">Last opp bilde og skriv instruksjonstekst for hvert steg.</div>
+    </div>
+    <div class="img-blocks" id="imgBlocks"></div>
+  </div>
+
+  <!-- ── STEG 4: Gjennomgang ── -->
+  <div class="step" id="step4">
+    <div class="step-hdr">
+      <div class="step-tag">Steg 04 / 04</div>
+      <div class="step-title">Gjennomgang</div>
+      <div class="step-sub">Sjekk at alt stemmer, og generer EPL-dokumentet.</div>
+    </div>
+    <div class="sec-lbl" style="margin-bottom:10px">Informasjon</div>
+    <table class="summary-table" id="summaryMeta"></table>
+    <div class="divider"></div>
+    <div class="sec-lbl" style="margin-bottom:10px">Bilder og tekst</div>
+    <div class="summary-img-grid" id="summaryImgs"></div>
+  </div>
+
+  <!-- ── FULLFØRT ── -->
+  <div class="step" id="stepDone">
+    <div class="success">
+      <div class="success-icon">✅</div>
+      <div class="success-title">EPL er klar!</div>
+      <div class="success-sub">Åpne dokumentet for å lagre som PDF eller sende på e-post.</div>
+      <div class="success-btns">
+        <button class="btn btn-primary" id="btnApnePDF">📄 Åpne EPL-dokument</button>
+        <button class="btn" id="btnNyEPL">+ Ny EPL</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- NAVIGASJON -->
+<div class="nav-bar" id="navBar">
+  <div class="nav-inner">
+    <button class="btn btn-back" id="btnBack" disabled>← Tilbake</button>
+    <button class="btn btn-primary" id="btnNext">Neste →</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- PDF-SKJERM -->
+<div id="pdfScreen">
+  <div class="pdf-toolbar">
+    <button class="btn btn-primary" id="btnPrint">🖨️ Lagre som PDF</button>
+    <a id="emailLink" href="#" class="btn btn-blue">✉️ Send e-post</a>
+    <button class="btn" id="btnLukkPDF">✕ Lukk</button>
+  </div>
+  <div class="pdf-info-bar" id="pdfInfoBar">
+    📌 Lagre siden som PDF via nettleserens utskriftsfunksjon
+  </div>
+  <div class="pdf-scroll-area">
+    <div id="eplDocOutput"></div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════
+   KONFIGURASJON — endre her
+════════════════════════════════════════ */
+const BEDRIFT = 'Din Bedrift AS'; // ← Firmanavn i topbar
+
+/* ════════════════════════════════════════
+   TILSTAND
+════════════════════════════════════════ */
+let curStep = 1;
+const TOTAL  = 4;
+let layout   = 'grid';
+const imgs   = {};
+const imgData = {};
+
+/* ════════════════════════════════════════
+   INITIALISERING
+════════════════════════════════════════ */
+document.getElementById('topbarBrand').textContent = BEDRIFT;
+document.getElementById('datoOpprettet').valueAsDate = new Date();
+
+// Knytt alle knapper til funksjoner her — ingen onclick i HTML
+document.getElementById('btnNext').addEventListener('click', goNext);
+document.getElementById('btnBack').addEventListener('click', goBack);
+document.getElementById('btnApnePDF').addEventListener('click', showPDF);
+document.getElementById('btnNyEPL').addEventListener('click', resetAll);
+document.getElementById('btnPrint').addEventListener('click', doPrint);
+document.getElementById('btnLukkPDF').addEventListener('click', hidePDF);
+
+// Layout-velger
+document.querySelectorAll('.layout-opt').forEach(function(el) {
+  el.addEventListener('click', function() {
+    layout = this.dataset.layout;
+    document.querySelectorAll('.layout-opt').forEach(function(o) { o.classList.remove('selected'); });
+    this.classList.add('selected');
+  });
+});
+
+/* ════════════════════════════════════════
+   HJELPEFUNKSJONER
+════════════════════════════════════════ */
+// Hent verdi fra felt
+function v(id) {
+  const el = document.getElementById(id);
+  return el ? (el.value || '').trim() : '';
+}
+
+// Vis kort toast-melding
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2800);
+}
+
+/* ════════════════════════════════════════
+   NAVIGASJON
+════════════════════════════════════════ */
+function updateUI() {
+  // Vis riktig steg
+  document.querySelectorAll('.step').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById(curStep <= TOTAL ? 'step' + curStep : 'stepDone').classList.add('active');
+
+  // Oppdater progress og steg-indikator
+  const pct = Math.round(Math.max(0, (curStep - 1) / TOTAL * 100));
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('stepInd').textContent = curStep <= TOTAL ? 'Steg ' + curStep + ' av ' + TOTAL : 'Fullført';
+
+  // Oppdater knapper
+  document.getElementById('btnBack').disabled = curStep <= 1;
+  document.getElementById('btnNext').textContent = curStep === TOTAL ? 'Generer EPL ✓' : 'Neste →';
+  document.getElementById('navBar').style.display = curStep > TOTAL ? 'none' : 'block';
+
+  window.scrollTo(0, 0);
+}
+
+function goNext() {
+  if (curStep === 1 && !validateSteg1()) return;
+  if (curStep === 2) byggBildeblokker();
+  if (curStep === 3) byggOppsummering();
+  if (curStep === TOTAL) {
+    byggOppsummering();
+    curStep = TOTAL + 1;
+    updateUI();
+    return;
+  }
+  curStep++;
+  updateUI();
+}
+
+function goBack() {
+  curStep--;
+  updateUI();
+}
+
+/* ════════════════════════════════════════
+   VALIDERING
+════════════════════════════════════════ */
+function validateSteg1() {
+  const pakrevde = ['eplNr', 'tittel', 'lagetAv', 'datoOpprettet', 'mottakerEpost'];
+  for (let i = 0; i < pakrevde.length; i++) {
+    const el = document.getElementById(pakrevde[i]);
+    if (!el || !el.value.trim()) {
+      if (el) {
+        el.focus();
+        el.style.borderColor = '#cc1515';
+        el.style.boxShadow = '0 0 0 3px rgba(204,21,21,0.15)';
+        setTimeout(function() { el.style.borderColor = ''; el.style.boxShadow = ''; }, 2500);
+      }
+      showToast('⚠️ Fyll ut alle påkrevde felt');
+      return false;
+    }
+  }
+  return true;
+}
+
+/* ════════════════════════════════════════
+   BILDEBLOKKER
+════════════════════════════════════════ */
+function byggBildeblokker() {
+  const n = parseInt(document.getElementById('antallBilder').value) || 3;
+  const container = document.getElementById('imgBlocks');
+  container.innerHTML = '';
+
+  for (let i = 1; i <= n; i++) {
+    const div = document.createElement('div');
+    div.className = 'img-block';
+    div.innerHTML = `
+      <div class="img-block-head">
+        <span class="img-block-num">0${i}</span>
+        <span class="img-block-lbl">Steg ${i}</span>
+        <span class="img-opt">Valgfritt</span>
+      </div>
+      <div class="upload-zone" id="zone${i}">
+        <input type="file" accept="image/*" capture="environment" data-steg="${i}">
+        <div class="upload-icon">📷</div>
+        <div class="upload-txt">
+          <strong>Ta bilde eller velg fra galleri</strong>
+          Trykk her for å åpne kamera
+        </div>
+      </div>
+      <div class="img-caption">
+        <label>Instruksjonstekst for steg ${i}</label>
+        <textarea id="cap${i}" placeholder="Beskriv hva som skal gjøres...">${imgData['cap'+i] || ''}</textarea>
+      </div>`;
+    container.appendChild(div);
+
+    // Fil-input lytter
+    div.querySelector('input[type=file]').addEventListener('change', function() {
+      const steg = parseInt(this.dataset.steg);
+      const file = this.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) { imgs[steg] = e.target.result; visForhåndsvisning(steg); };
+      reader.readAsDataURL(file);
+    });
+
+    // Gjenopprett bilde hvis det allerede er lastet opp
+    if (imgs[i]) visForhåndsvisning(i);
+  }
+}
+
+function visForhåndsvisning(n) {
+  const zone = document.getElementById('zone' + n);
+  if (!zone) return;
+  zone.style.cssText = 'margin:0;padding:0;border:none;background:none;';
+  zone.innerHTML = `
+    <img class="img-preview" src="${imgs[n]}" alt="Bilde ${n}">
+    <div class="img-remove" data-fjern="${n}">✕ Fjern bilde</div>`;
+  zone.querySelector('.img-remove').addEventListener('click', function() {
+    fjernBilde(parseInt(this.dataset.fjern));
+  });
+}
+
+function fjernBilde(n) {
+  imgs[n] = null;
+  const zone = document.getElementById('zone' + n);
+  zone.style.cssText = '';
+  zone.innerHTML = `
+    <input type="file" accept="image/*" capture="environment" data-steg="${n}">
+    <div class="upload-icon">📷</div>
+    <div class="upload-txt">
+      <strong>Ta bilde eller velg fra galleri</strong>
+      Trykk her for å åpne kamera
+    </div>`;
+  zone.querySelector('input[type=file]').addEventListener('change', function() {
+    const steg = parseInt(this.dataset.steg);
+    const file = this.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) { imgs[steg] = e.target.result; visForhåndsvisning(steg); };
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ════════════════════════════════════════
+   OPPSUMMERING
+════════════════════════════════════════ */
+function byggOppsummering() {
+  const n = parseInt(document.getElementById('antallBilder').value) || 3;
+
+  // Lagre caption-tekster
+  for (let i = 1; i <= n; i++) {
+    const el = document.getElementById('cap' + i);
+    if (el) imgData['cap' + i] = el.value;
+  }
+
+  // Metadatarad
+  const rader = [
+    ['EPL-nr.', v('eplNr')],
+    ['Tittel',  v('tittel')],
+    ['Maskin',  v('maskin') || '—'],
+    ['Beskrivelse', v('beskrivelse') || '—'],
+    ['Laget av', v('lagetAv')],
+    ['Dato',    v('datoOpprettet')],
+    ['Sign.',   v('signLaget') || '—'],
+    ['Send til', v('mottakerEpost')],
+    ['Layout',  {grid:'Rutenett', side:'Side om side', stack:'Stablet'}[layout]],
+    ['Bilder',  String(n)],
+  ];
+  document.getElementById('summaryMeta').innerHTML =
+    rader.map(function(r) { return `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`; }).join('');
+
+  // Bilde-oppsummering
+  const imgCont = document.getElementById('summaryImgs');
+  imgCont.innerHTML = '';
+  let harNoe = false;
+  for (let i = 1; i <= n; i++) {
+    const cap = imgData['cap' + i] || '';
+    if (imgs[i] || cap) {
+      harNoe = true;
+      imgCont.innerHTML += `
+        <div class="summary-img-block">
+          <div class="summary-img-lbl">Steg ${i}</div>
+          ${imgs[i] ? `<img src="${imgs[i]}" alt="Steg ${i}">` : '<div class="no-img">Ingen bilde</div>'}
+          ${cap ? `<div class="summary-img-cap">${cap}</div>` : ''}
+        </div>`;
+    }
+  }
+  if (!harNoe) {
+    imgCont.innerHTML = '<div class="no-img" style="padding:20px;border:1.5px solid #bbb;border-radius:6px;background:white;">Ingen bilder eller tekst lagt til</div>';
+  }
+}
+
+/* ════════════════════════════════════════
+   EPL-DOKUMENT
+════════════════════════════════════════ */
+function genererEPL() {
+  const n    = parseInt(v('antallBilder')) || 3;
+  const noImg = '<div class="no-img-box">Ingen bilde</div>';
+
+  // Bygg innhold basert på valgt layout
+  const byggInnhold = function() {
+    if (layout === 'grid') {
+      return `<div class="epl-layout-grid">${
+        Array.from({length: n}, function(_, idx) {
+          const i = idx + 1;
+          return `<div class="epl-img-cell">
+            ${imgs[i] ? `<img src="${imgs[i]}" alt="Steg ${i}">` : noImg}
+            ${imgData['cap'+i] ? `<div class="epl-cap">${imgData['cap'+i]}</div>` : ''}
+          </div>`;
+        }).join('')
+      }</div>`;
+    }
+    if (layout === 'side') {
+      return `<div class="epl-layout-side">${
+        Array.from({length: n}, function(_, idx) {
+          const i = idx + 1;
+          return `<div class="epl-side-row">
+            ${imgs[i] ? `<img src="${imgs[i]}" alt="Steg ${i}">` : noImg}
+            <div class="epl-side-text">${imgData['cap'+i] || ''}</div>
+          </div>`;
+        }).join('')
+      }</div>`;
+    }
+    // stack
+    return `<div class="epl-layout-stack">${
+      Array.from({length: n}, function(_, idx) {
+        const i = idx + 1;
+        return `<div class="epl-stack-item">
+          ${imgs[i] ? `<img src="${imgs[i]}" alt="Steg ${i}">` : noImg}
+          ${imgData['cap'+i] ? `<div class="epl-cap">${imgData['cap'+i]}</div>` : ''}
+        </div>`;
+      }).join('')
+    }</div>`;
+  };
+
+  document.getElementById('eplDocOutput').innerHTML = `
+  <div class="epl-doc">
+    <div class="epl-header">
+      <div class="epl-title-block">
+        <div class="epl-main-title">ETTPUNKTSLEKSJON</div>
+      </div>
+      <div class="epl-right-block">
+        <div class="epl-epl-nr-label">EPL nr.</div>
+        <div class="epl-epl-nr">${v('eplNr')}</div>
+        <div class="epl-logo-placeholder">DIN LOGO HER</div>
+      </div>
+    </div>
+    <div class="epl-meta">
+      <div class="epl-body-with-meta">
+        <div>
+          <div class="epl-meta-row r1">
+            <div class="epl-meta-cell">
+              <div class="cell-label">Tittel:</div>
+              <div class="cell-val">${v('tittel')}</div>
+            </div>
+            <div class="epl-meta-cell">
+              <div class="cell-label">Maskin:</div>
+              <div class="cell-val">${v('maskin')}</div>
+            </div>
+          </div>
+          <div class="epl-desc-row">
+            <div class="cell-label">Beskrivelse:</div>
+            <div>${v('beskrivelse')}</div>
+          </div>
+        </div>
+        <div class="epl-right-meta">
+          <div class="epl-right-meta-row">
+            <div>
+              <div class="epl-right-meta-label">Laget av:</div>
+              <div class="epl-right-meta-val">${v('lagetAv')}</div>
+            </div>
+            <div>
+              <div class="epl-right-meta-label">Godkjent av:</div>
+              <div class="epl-right-meta-val epl-editable" contenteditable="true" data-placeholder="Skriv her...">${v('godkjentAv')}</div>
+            </div>
+          </div>
+          <div class="epl-right-meta-row">
+            <div>
+              <div class="epl-right-meta-label">Dato:</div>
+              <div class="epl-right-meta-val">${v('datoOpprettet')}</div>
+            </div>
+            <div>
+              <div class="epl-right-meta-label">Dato:</div>
+              <div class="epl-right-meta-val epl-editable" contenteditable="true" data-placeholder="Skriv her...">${v('datoGodkjent')}</div>
+            </div>
+          </div>
+          <div class="epl-right-meta-row">
+            <div>
+              <div class="epl-right-meta-label">Sign.:</div>
+              <div class="epl-right-meta-val">${v('signLaget')}</div>
+            </div>
+            <div>
+              <div class="epl-right-meta-label">Sign.:</div>
+              <div class="epl-right-meta-val epl-editable" contenteditable="true" data-placeholder="Skriv her...">${v('signGodkjent')}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="epl-content">${byggInnhold()}</div>
+  </div>`;
+}
+
+/* ════════════════════════════════════════
+   E-POST
+════════════════════════════════════════ */
+function oppdaterEpostlenke() {
+  const n       = parseInt(v('antallBilder')) || 3;
+  const mottaker = v('mottakerEpost');
+  const subject  = encodeURIComponent(`EPL ${v('eplNr')} – ${v('tittel')}`);
+
+  let stegTekst = '';
+  for (let i = 1; i <= n; i++) {
+    const cap = imgData['cap' + i] || '';
+    if (cap) stegTekst += `\nSteg ${i}:\n${cap}\n`;
+  }
+
+  const body = encodeURIComponent(
+    `Ny Ettpunktsleksjon er registrert og klar for gjennomgang.\n\n` +
+    `──────────────────────────────\nEPL-INFORMASJON\n──────────────────────────────\n` +
+    `EPL-nummer:  ${v('eplNr')}\n` +
+    `Tittel:      ${v('tittel')}\n` +
+    `Maskin:      ${v('maskin') || '—'}\n` +
+    `Beskrivelse: ${v('beskrivelse') || '—'}\n\n` +
+    `Laget av:    ${v('lagetAv')} (${v('signLaget') || '—'})\n` +
+    `Dato:        ${v('datoOpprettet')}\n` +
+    `Godkjent av: (fylles ut av godkjenner)\n` +
+    `──────────────────────────────\nINSTRUKSJONER\n──────────────────────────────\n` +
+    (stegTekst || '(Ingen instruksjonstekst registrert)') +
+    `\n──────────────────────────────\n` +
+    `Merk: Bilder må legges ved manuelt om ønskelig.`
+  );
+
+  document.getElementById('emailLink').href = `mailto:${mottaker}?subject=${subject}&body=${body}`;
+}
+
+/* ════════════════════════════════════════
+   PDF OG PRINT
+════════════════════════════════════════ */
+function showPDF() {
+  genererEPL();
+  oppdaterEpostlenke();
+  document.getElementById('pdfScreen').classList.add('visible');
+}
+
+function hidePDF() {
+  document.getElementById('pdfScreen').classList.remove('visible');
+}
+
+function doPrint() {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  if (isIOS) {
+    document.getElementById('pdfInfoBar').textContent =
+      '📌 iPhone: Trykk Del-knappen (□↑) i Safari → "Skriv ut" → klyp ut på forhåndsvisning for å lagre som PDF';
+  } else {
+    window.print();
+  }
+}
+
+/* ════════════════════════════════════════
+   NULLSTILL
+════════════════════════════════════════ */
+function resetAll() {
+  curStep = 1;
+  ['eplNr','tittel','beskrivelse','lagetAv','signLaget',
+   'godkjentAv','signGodkjent','mottakerEpost'].forEach(function(id) {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  const maskin = document.getElementById('maskin');
+  if (maskin) maskin.selectedIndex = 0;
+  const datoG = document.getElementById('datoGodkjent');
+  if (datoG) datoG.value = '';
+  document.getElementById('datoOpprettet').valueAsDate = new Date();
+  document.getElementById('antallBilder').value = '3';
+  for (let i = 1; i <= 4; i++) { imgs[i] = null; imgData['cap'+i] = ''; }
+  layout = 'grid';
+  document.querySelectorAll('.layout-opt').forEach(function(o) { o.classList.remove('selected'); });
+  document.querySelector('[data-layout="grid"]').classList.add('selected');
+  document.getElementById('imgBlocks').innerHTML = '';
+  updateUI();
+}
+
+/* ════════════════════════════════════════
+   START
+════════════════════════════════════════ */
+updateUI();
+</script>
+</body>
+</html>
