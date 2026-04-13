@@ -228,7 +228,7 @@ select {
 .epl-right-block { border-left: 2px solid #000; display: flex; align-items: center; justify-content: center; padding: 6px 12px; min-width: 130px; background: white; }
 .epl-logo        { width: 140px; height: auto; display: block; }
 
-.epl-body-with-meta { display: grid; grid-template-columns: 1fr 155px; }
+.epl-body-with-meta { display: grid; grid-template-columns: 1fr 155px; align-items: start; }
 .epl-meta           { border-bottom: 1px solid #000; }
 .epl-meta-row       { display: grid; border-bottom: 1px solid #ccc; }
 .epl-meta-row:last-child { border-bottom: none; }
@@ -246,7 +246,7 @@ select {
 .epl-desc-row .cell-label { font-size: 8px; color: #777; margin-bottom: 1px; }
 
 .epl-right-meta      { border-left: 2px solid #000; font-size: 9px; }
-.epl-right-meta-row  { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #ccc; padding: 3px 5px; gap: 4px; }
+.epl-right-meta-row  { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #ccc; padding: 3px 5px; gap: 4px; min-height: 0; }
 .epl-right-meta-row:last-child { border-bottom: none; }
 .epl-right-meta-label { color: #777; font-size: 8px; }
 .epl-right-meta-val   { font-weight: 600; font-size: 9px; }
@@ -285,30 +285,21 @@ select {
     margin: 15mm 15mm 15mm 15mm;
   }
 
-  /* EPL-dokumentet fyller hele A4-bredden */
+  /* EPL-dokumentet fyller hele A4 — ramme til bunnen */
   .epl-doc {
     width: 100% !important;
     font-size: 10px !important;
-    display: block !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: calc(297mm - 30mm) !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
   }
 
-  /* Innholdsseksjonen */
-  .epl-content {
-    padding: 10px !important;
-  }
-
-  /* Innholdsseksjonen fyller all gjenværende plass */
+  /* Innholdsseksjonen fyller gjenværende plass */
   .epl-content {
     flex: 1 !important;
     padding: 10px !important;
-    border-top: 1px solid #ccc;
-  }
-
-  /* Layout-containere fyller innholdsseksjonen */
-  .epl-layout-grid,
-  .epl-layout-side,
-  .epl-layout-stack {
-    height: 100% !important;
   }
 
   /* Bilder skal aldri bryte over sideskift */
@@ -316,12 +307,12 @@ select {
   .epl-side-row,
   .epl-stack-item { break-inside: avoid; }
 
-  /* Bildehøyder tilpasset A4 med 3 bilder */
+  /* Bildehøyder tilpasset A4 */
   .epl-img-cell img,
   .epl-side-row img  { max-height: 200px !important; }
   .epl-stack-item img { max-height: 220px !important; }
 
-  /* Sørg for at meta-seksjonen ikke brytes */
+  /* Sørg for at header ikke brytes */
   .epl-header,
   .epl-meta { break-inside: avoid; }
 }
