@@ -393,11 +393,6 @@ select {
       <label>Signatur / initialer</label>
       <input type="text" id="signLaget" placeholder="Eks: KGR" autocomplete="off">
     </div>
-    <div class="field">
-      <label>Send EPL til (e-post) <span class="req">*</span></label>
-      <input type="email" id="mottakerEpost" placeholder="godkjenner@bedrift.no" autocomplete="email" inputmode="email">
-      <div class="hint-text">📧 E-postadressen som skal motta EPL-en for godkjenning.</div>
-    </div>
 
     <div class="divider"></div>
     <div class="sec-lbl">Godkjent av</div>
@@ -511,7 +506,6 @@ select {
 <div id="pdfScreen">
   <div class="pdf-toolbar">
     <button class="btn btn-primary" id="btnPrint">🖨️ Lagre som PDF</button>
-    <a id="emailLink" href="#" class="btn btn-blue">✉️ Send e-post</a>
     <button class="btn" id="btnLukkPDF">✕ Lukk</button>
   </div>
   <div class="pdf-info-bar" id="pdfInfoBar">
@@ -526,7 +520,7 @@ select {
 /* ════════════════════════════════════════
    KONFIGURASJON — endre her
 ════════════════════════════════════════ */
-const BEDRIFT = 'Egenes Brannteknikk'; // ← Firmanavn i topbar
+const BEDRIFT = 'Din Bedrift AS'; // ← Firmanavn i topbar
 
 /* ════════════════════════════════════════
    TILSTAND
@@ -621,7 +615,7 @@ function goBack() {
    VALIDERING
 ════════════════════════════════════════ */
 function validateSteg1() {
-  const pakrevde = ['eplNr', 'tittel', 'lagetAv', 'datoOpprettet', 'mottakerEpost'];
+  const pakrevde = ['eplNr', 'tittel', 'lagetAv', 'datoOpprettet'];
   for (let i = 0; i < pakrevde.length; i++) {
     const el = document.getElementById(pakrevde[i]);
     if (!el || !el.value.trim()) {
@@ -947,7 +941,7 @@ function doPrint() {
 function resetAll() {
   curStep = 1;
   ['eplNr','tittel','beskrivelse','lagetAv','signLaget',
-   'godkjentAv','signGodkjent','mottakerEpost'].forEach(function(id) {
+   'godkjentAv','signGodkjent'].forEach(function(id) {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
