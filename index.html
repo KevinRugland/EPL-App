@@ -214,7 +214,7 @@ select {
 /* ════════════════════════════════════════
    EPL-DOKUMENT
 ════════════════════════════════════════ */
-.epl-doc        { font-family: Arial, Helvetica, sans-serif; border: 2px solid #000; font-size: 11px; color: #000; background: white; }
+.epl-doc        { font-family: Arial, Helvetica, sans-serif; border: 2px solid #000; font-size: 11px; color: #000; background: white; display: flex; flex-direction: column; }
 .epl-header      { display: grid; grid-template-columns: 1fr auto; border-bottom: 2px solid #000; }
 .epl-title-block { padding: 8px 12px; display: flex; align-items: center; gap: 0; border-right: none; }
 .epl-main-title  { font-size: 20px; font-weight: 900; font-family: Arial Black, Arial, sans-serif; flex: 1; }
@@ -225,7 +225,7 @@ select {
 .epl-epl-nr      { font-size: 13px; font-weight: 700; }
 
 /* Logoboks alene til høyre */
-.epl-right-block { border-left: 2px solid #000; display: flex; align-items: center; justify-content: center; padding: 4px 8px; min-width: 130px; background: #1a1a1a; }
+.epl-right-block { border-left: 2px solid #000; display: flex; align-items: center; justify-content: center; padding: 6px 12px; min-width: 130px; background: white; }
 .epl-logo        { width: 110px; height: auto; display: block; }
 
 .epl-body-with-meta { display: grid; grid-template-columns: 1fr 155px; }
@@ -251,7 +251,7 @@ select {
 .epl-right-meta-label { color: #777; font-size: 8px; }
 .epl-right-meta-val   { font-weight: 600; font-size: 9px; }
 
-.epl-content { padding: 8px; }
+.epl-content { padding: 8px; flex: 1; }
 
 /* Layout: rutenett */
 .epl-layout-grid        { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -289,10 +289,16 @@ select {
   .epl-doc {
     width: 100% !important;
     font-size: 10px !important;
-    /* Strekk dokumentet til å fylle resten av siden etter header */
-    min-height: calc(297mm - 30mm); /* A4 høyde minus topp+bunn margin */
     display: flex !important;
     flex-direction: column !important;
+    min-height: calc(297mm - 30mm) !important;
+    page-break-inside: avoid;
+  }
+
+  /* Innholdsseksjonen fyller gjenværende plass */
+  .epl-content {
+    flex: 1 !important;
+    padding: 10px !important;
   }
 
   /* Innholdsseksjonen fyller all gjenværende plass */
@@ -825,7 +831,7 @@ function genererEPL() {
         </div>
       </div>
       <div class="epl-right-block">
-        <img class="epl-logo" src="data:image/webp;base64,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" alt="Logo">
+        <img class="epl-logo" src="data:image/jpeg;base64,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" alt="Egenes Brannteknikk">
       </div>
     </div>
     <div class="epl-meta">
