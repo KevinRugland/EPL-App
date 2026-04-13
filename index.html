@@ -282,13 +282,31 @@ select {
 
   @page {
     size: A4 portrait;
-    margin: 12mm 12mm 12mm 12mm;
+    margin: 15mm 15mm 15mm 15mm;
   }
 
-  /* Sørg for at EPL-dokumentet fyller A4-bredden */
+  /* EPL-dokumentet fyller hele A4-bredden */
   .epl-doc {
     width: 100% !important;
     font-size: 10px !important;
+    /* Strekk dokumentet til å fylle resten av siden etter header */
+    min-height: calc(297mm - 30mm); /* A4 høyde minus topp+bunn margin */
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* Innholdsseksjonen fyller all gjenværende plass */
+  .epl-content {
+    flex: 1 !important;
+    padding: 10px !important;
+    border-top: 1px solid #ccc;
+  }
+
+  /* Layout-containere fyller innholdsseksjonen */
+  .epl-layout-grid,
+  .epl-layout-side,
+  .epl-layout-stack {
+    height: 100% !important;
   }
 
   /* Bilder skal aldri bryte over sideskift */
@@ -296,10 +314,14 @@ select {
   .epl-side-row,
   .epl-stack-item { break-inside: avoid; }
 
-  /* Begrens bildehøyde for print slik at de passer på siden */
+  /* Bildehøyder tilpasset A4 med 3 bilder */
   .epl-img-cell img,
-  .epl-side-row img  { max-height: 180px !important; }
-  .epl-stack-item img { max-height: 260px !important; }
+  .epl-side-row img  { max-height: 200px !important; }
+  .epl-stack-item img { max-height: 220px !important; }
+
+  /* Sørg for at meta-seksjonen ikke brytes */
+  .epl-header,
+  .epl-meta { break-inside: avoid; }
 }
 </style>
 </head>
