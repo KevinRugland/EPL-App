@@ -212,47 +212,28 @@ select {
 .pdf-scroll-area { flex: 1; overflow-y: auto; padding: 16px; -webkit-overflow-scrolling: touch; }
 
 /* ════════════════════════════════════════
-   EPL-DOKUMENT
+   EPL-DOKUMENT — tabell-basert
 ════════════════════════════════════════ */
-.epl-doc        { font-family: Arial, Helvetica, sans-serif; border: 2px solid #000; font-size: 11px; color: #000; background: white; display: flex; flex-direction: column; }
-.epl-header      { display: grid; grid-template-columns: 1fr auto; border-bottom: 2px solid #000; }
-.epl-title-block { padding: 8px 12px; display: flex; align-items: center; gap: 0; border-right: none; }
-.epl-main-title  { font-size: 20px; font-weight: 900; font-family: Arial Black, Arial, sans-serif; flex: 1; }
+.epl-doc { font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: #000; background: white; width: 100%; display: flex; flex-direction: column; }
 
-/* EPL-nummer i egen boks ved siden av tittelen */
-.epl-nr-block    { border-left: 1px solid #000; padding: 4px 10px; display: flex; flex-direction: column; justify-content: center; min-width: 200px; }
-.epl-epl-nr-label { font-size: 8px; color: #555; margin-bottom: 2px; }
-.epl-epl-nr      { font-size: 13px; font-weight: 700; }
+/* Hoved-tabell */
+.epl-table { width: 100%; border-collapse: collapse; border: 2px solid #000; table-layout: fixed; }
+.epl-table td { border: 1px solid #ccc; padding: 3px 6px; vertical-align: top; font-size: 10px; }
+.epl-table td.epl-td-title { border: none; border-right: 1px solid #000; padding: 6px 10px; vertical-align: middle; width: auto; }
+.epl-table td.epl-td-eplnr { border: none; border-right: 2px solid #000; padding: 4px 8px; vertical-align: middle; width: 160px; }
+.epl-table td.epl-td-logo  { border: none; border-left: none; padding: 4px 8px; vertical-align: middle; text-align: center; width: 140px; }
+.epl-table td.epl-td-content { border: none; border-top: 2px solid #000; padding: 8px; }
+.epl-table tr.epl-tr-header td { border-bottom: 2px solid #000; }
 
-/* Logoboks alene til høyre */
-.epl-right-block { border-left: 2px solid #000; display: flex; align-items: center; justify-content: center; padding: 6px 12px; min-width: 130px; background: white; }
-.epl-logo        { width: 140px; height: auto; display: block; }
+.epl-main-title { font-size: 20px; font-weight: 900; font-family: Arial Black, Arial, sans-serif; }
+.epl-logo       { width: 130px; height: auto; display: block; }
+.epl-epl-nr     { font-size: 13px; font-weight: 700; }
 
-.epl-body-with-meta { display: grid; grid-template-columns: 1fr 155px; align-items: stretch; }
-.epl-left-meta { display: flex; flex-direction: column; }
-.epl-meta           { border-bottom: 2px solid #000; }
-.epl-meta-row       { display: grid; border-bottom: 1px solid #ccc; }
-.epl-meta-row:last-child { border-bottom: none; }
-.epl-meta-row.r1    { grid-template-columns: 2fr 1fr; }
+.cell-label { font-size: 8px; color: #777; margin-bottom: 1px; }
+.cell-val   { font-weight: 600; font-size: 10px; }
 
-.epl-desc-row            { padding: 4px 7px; font-size: 10px; flex: 1; }
-.epl-desc-row .cell-label { font-size: 8px; color: #777; margin-bottom: 1px; }
-
-.epl-right-meta      { border-left: 2px solid #000; font-size: 9px; display: flex; flex-direction: column; }
-.epl-right-meta-row  { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #ccc; padding: 3px 5px; gap: 4px; }
-.epl-right-meta-row:last-child { border-bottom: none; flex: 1; align-items: flex-start; }
-.epl-right-meta-label { color: #777; font-size: 8px; }
-.epl-right-meta-val   { font-weight: 600; font-size: 9px; }
-
-.epl-editable { min-width: 40px; min-height: 12px; outline: none; border-bottom: 1px dashed #aaa; cursor: text; display: inline-block; }
+.epl-editable { min-width: 40px; outline: none; border-bottom: 1px dashed #aaa; cursor: text; display: inline-block; font-size: 9px; }
 .epl-editable:empty::before { content: attr(data-placeholder); color: #bbb; font-style: italic; }
-
-.epl-meta-cell            { padding: 3px 7px; border-right: 1px solid #ccc; font-size: 10px; }
-.epl-meta-cell:last-child { border-right: none; }
-.epl-meta-cell .cell-label { font-size: 8px; color: #777; margin-bottom: 1px; }
-.epl-meta-cell .cell-val   { font-weight: 600; font-size: 10px; }
-.epl-right-meta-label { color: #777; font-size: 8px; }
-.epl-right-meta-val   { font-weight: 600; font-size: 9px; }
 
 .epl-content { padding: 8px; flex: 1; }
 
@@ -835,71 +816,72 @@ function genererEPL() {
 
   document.getElementById('eplDocOutput').innerHTML = `
   <div class="epl-doc">
-    <div class="epl-header">
-      <div class="epl-title-block">
-        <div class="epl-main-title">ETTPUNKTSLEKSJON</div>
-        <div class="epl-nr-block">
-          <div class="epl-epl-nr-label">EPL nr.</div>
-          <div class="epl-epl-nr">${v('eplNr')}</div>
-        </div>
-      </div>
-      <div class="epl-right-block">
-        <img class="epl-logo" src="Egenes_Brannteknikk.png" alt="Egenes Brannteknikk">
-      </div>
-    </div>
-    <div class="epl-meta">
-      <div class="epl-body-with-meta">
-        <div class="epl-left-meta">
-          <div class="epl-meta-row r1">
-            <div class="epl-meta-cell">
-              <div class="cell-label">Tittel:</div>
-              <div class="cell-val">${v('tittel')}</div>
+    <table class="epl-table">
+      <tbody>
+        <!-- RAD 1: Tittel + EPL-nr + Logo -->
+        <tr class="epl-tr-header">
+          <td class="epl-td-title" colspan="2">
+            <span class="epl-main-title">ETTPUNKTSLEKSJON</span>
+          </td>
+          <td class="epl-td-eplnr">
+            <div class="cell-label">EPL nr.</div>
+            <div class="epl-epl-nr">${v('eplNr') || ''}</div>
+          </td>
+          <td class="epl-td-logo" rowspan="4">
+            <img class="epl-logo" src="Egenes_Brannteknikk.png" alt="Egenes Brannteknikk">
+          </td>
+        </tr>
+
+        <!-- RAD 2: Tittel + Maskin + Laget av / Godkjent av -->
+        <tr>
+          <td style="width:40%;">
+            <div class="cell-label">Tittel:</div>
+            <div class="cell-val">${v('tittel')}</div>
+          </td>
+          <td style="width:20%;">
+            <div class="cell-label">Maskin:</div>
+            <div class="cell-val">${v('maskin')}</div>
+          </td>
+          <td>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
+              <div><div class="cell-label">Laget av:</div><div class="cell-val">${v('lagetAv')}</div></div>
+              <div><div class="cell-label">Godkjent av:</div><div class="epl-editable cell-val" contenteditable="true" data-placeholder="Skriv her...">${v('godkjentAv')}</div></div>
             </div>
-            <div class="epl-meta-cell">
-              <div class="cell-label">Maskin:</div>
-              <div class="cell-val">${v('maskin')}</div>
-            </div>
-          </div>
-          <div class="epl-desc-row">
+          </td>
+        </tr>
+
+        <!-- RAD 3: Beskrivelse + Dato -->
+        <tr>
+          <td colspan="2" rowspan="2" style="vertical-align:top; min-height:30px;">
             <div class="cell-label">Beskrivelse:</div>
-            <div>${v('beskrivelse')}</div>
-          </div>
-        </div>
-        <div class="epl-right-meta">
-          <div class="epl-right-meta-row">
-            <div>
-              <div class="epl-right-meta-label">Laget av:</div>
-              <div class="epl-right-meta-val">${v('lagetAv')}</div>
+            <div class="cell-val">${v('beskrivelse')}</div>
+          </td>
+          <td>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
+              <div><div class="cell-label">Dato:</div><div class="cell-val">${v('datoOpprettet')}</div></div>
+              <div><div class="cell-label">Dato:</div><div class="epl-editable cell-val" contenteditable="true" data-placeholder="Skriv her...">${v('datoGodkjent')}</div></div>
             </div>
-            <div>
-              <div class="epl-right-meta-label">Godkjent av:</div>
-              <div class="epl-right-meta-val epl-editable" contenteditable="true" data-placeholder="Skriv her...">${v('godkjentAv')}</div>
+          </td>
+        </tr>
+
+        <!-- RAD 4: Sign -->
+        <tr>
+          <td>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
+              <div><div class="cell-label">Sign.:</div><div class="cell-val">${v('signLaget')}</div></div>
+              <div><div class="cell-label">Sign.:</div><div class="epl-editable cell-val" contenteditable="true" data-placeholder="Skriv her...">${v('signGodkjent')}</div></div>
             </div>
-          </div>
-          <div class="epl-right-meta-row">
-            <div>
-              <div class="epl-right-meta-label">Dato:</div>
-              <div class="epl-right-meta-val">${v('datoOpprettet')}</div>
-            </div>
-            <div>
-              <div class="epl-right-meta-label">Dato:</div>
-              <div class="epl-right-meta-val epl-editable" contenteditable="true" data-placeholder="Skriv her...">${v('datoGodkjent')}</div>
-            </div>
-          </div>
-          <div class="epl-right-meta-row" style="flex:1;">
-            <div>
-              <div class="epl-right-meta-label">Sign.:</div>
-              <div class="epl-right-meta-val">${v('signLaget')}</div>
-            </div>
-            <div>
-              <div class="epl-right-meta-label">Sign.:</div>
-              <div class="epl-right-meta-val epl-editable" contenteditable="true" data-placeholder="Skriv her...">${v('signGodkjent')}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="epl-content">${byggInnhold()}</div>
+          </td>
+        </tr>
+
+        <!-- INNHOLD -->
+        <tr>
+          <td colspan="4" class="epl-td-content">
+            ${byggInnhold()}
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>`;
 }
 
