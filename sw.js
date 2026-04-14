@@ -3,10 +3,12 @@
 // Oppdater CACHE_VERSION ved hver ny deploy
 // ════════════════════════════════════════
 
-const CACHE_VERSION = 'epl-v1';
+const CACHE_VERSION = 'epl-v2';
 const CACHE_FILES = [
   '/EPL-App/',
   '/EPL-App/index.html',
+  '/EPL-App/style.css',
+  '/EPL-App/app.js',
   '/EPL-App/manifest.json',
   '/EPL-App/Egenes_Brannteknikk.png'
 ];
