@@ -5,9 +5,10 @@
 
 const CACHE_VERSION = 'epl-v1';
 const CACHE_FILES = [
-  '/',
-  '/index.html',
-  '/manifest.json'
+  '/EPL-App/',
+  '/EPL-App/index.html',
+  '/EPL-App/manifest.json',
+  '/EPL-App/Egenes_Brannteknikk.png'
 ];
 
 // Installer: cache alle nødvendige filer
@@ -63,7 +64,7 @@ self.addEventListener('fetch', function(event) {
         return networkResponse;
       }).catch(function() {
         // Offline og ikke i cache — vis index.html som fallback
-        return caches.match('/index.html');
+        return caches.match('/EPL-App/index.html');
       });
     })
   );
