@@ -275,8 +275,20 @@ select {
    PRINT — A4 stående
 ════════════════════════════════════════ */
 @media print {
-  body > *:not(#pdfScreen) { display: none !important; }
-  #pdfScreen { display: block !important; position: static !important; background: none !important; }
+  /* Skjul ALT unntatt PDF-skjermen */
+  * { visibility: hidden; }
+  #pdfScreen, #pdfScreen * { visibility: visible; }
+
+  #pdfScreen {
+    display: block !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    background: none !important;
+    overflow: visible !important;
+  }
+
   .pdf-toolbar, .pdf-info-bar { display: none !important; }
   .pdf-scroll-area { overflow: visible !important; padding: 0 !important; }
 
@@ -501,10 +513,11 @@ select {
 <div id="pdfScreen">
   <div class="pdf-toolbar">
     <button class="btn btn-primary" id="btnPrint">🖨️ Lagre som PDF</button>
+    <a id="btnSendEpost" href="#" class="btn btn-blue">✉️ Send e-post</a>
     <button class="btn" id="btnLukkPDF">✕ Lukk</button>
   </div>
   <div class="pdf-info-bar" id="pdfInfoBar">
-    📌 Lagre siden som PDF via nettleserens utskriftsfunksjon
+    📌 Lagre PDF først, legg den ved manuelt i e-posten
   </div>
   <div class="pdf-scroll-area">
     <div id="eplDocOutput"></div>
@@ -538,11 +551,12 @@ document.getElementById('btnBack').addEventListener('click', goBack);
 document.getElementById('btnApnePDF').addEventListener('click', showPDF);
 document.getElementById('btnNyEPL').addEventListener('click', resetAll);
 document.getElementById('btnTilbakeEndringer').addEventListener('click', function() {
-  curStep = TOTAL; // Gå tilbake til steg 4 (gjennomgang)
+  curStep = TOTAL;
   updateUI();
 });
 document.getElementById('btnPrint').addEventListener('click', doPrint);
 document.getElementById('btnLukkPDF').addEventListener('click', hidePDF);
+document.getElementById('btnSendEpost').addEventListener('click', oppdaterEpostlenke);
 
 // Layout-velger
 document.querySelectorAll('.layout-opt').forEach(function(el) {
@@ -879,10 +893,41 @@ function genererEPL() {
 }
 
 /* ════════════════════════════════════════
+   E-POST
+════════════════════════════════════════ */
+function oppdaterEpostlenke() {
+  const n = parseInt(v('antallBilder')) || 3;
+  const subject = encodeURIComponent('EPL ' + (v('eplNr') ? v('eplNr') + ' – ' : '') + v('tittel'));
+  let stegTekst = '';
+  for (let i = 1; i <= n; i++) {
+    const cap = imgData['cap' + i] || '';
+    if (cap) stegTekst += '\nSteg ' + i + ':\n' + cap + '\n';
+  }
+  const body = encodeURIComponent(
+    'Ny Ettpunktsleksjon er registrert og klar for gjennomgang.\n\n' +
+    '──────────────────────────────\nEPL-INFORMASJON\n──────────────────────────────\n' +
+    (v('eplNr') ? 'EPL-nummer:  ' + v('eplNr') + '\n' : 'EPL-nummer:  (fylles ut av godkjenner)\n') +
+    'Tittel:      ' + v('tittel') + '\n' +
+    'Maskin:      ' + (v('maskin') || '—') + '\n' +
+    'Beskrivelse: ' + (v('beskrivelse') || '—') + '\n\n' +
+    'Laget av:    ' + v('lagetAv') + ' (' + (v('signLaget') || '—') + ')\n' +
+    'Dato:        ' + v('datoOpprettet') + '\n' +
+    'Godkjent av: (fylles ut av godkjenner)\n' +
+    '──────────────────────────────\nINSTRUKSJONER\n──────────────────────────────\n' +
+    (stegTekst || '(Ingen instruksjonstekst registrert)') +
+    '\n──────────────────────────────\n' +
+    'Merk: Husk å legge ved PDF-filen i denne e-posten.'
+  );
+  const el = document.getElementById('btnSendEpost');
+  if (el) el.href = 'mailto:?subject=' + subject + '&body=' + body;
+}
+
+/* ════════════════════════════════════════
    PDF OG PRINT
 ════════════════════════════════════════ */
 function showPDF() {
   genererEPL();
+  oppdaterEpostlenke();
   document.getElementById('pdfScreen').classList.add('visible');
 }
 
