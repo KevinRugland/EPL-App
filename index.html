@@ -234,6 +234,15 @@ select {
 .epl-meta-row:last-child { border-bottom: none; }
 .epl-meta-row.r1    { grid-template-columns: 2fr 1fr; }
 
+.epl-desc-row            { padding: 4px 7px; border-bottom: 2px solid #000; font-size: 10px; display: flex; flex-direction: column; flex: 1; }
+.epl-desc-row .cell-label { font-size: 8px; color: #777; margin-bottom: 1px; }
+
+.epl-right-meta      { border-left: 2px solid #000; font-size: 9px; display: flex; flex-direction: column; }
+.epl-right-meta-row  { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #ccc; padding: 3px 5px; gap: 4px; }
+.epl-right-meta-row:last-child { border-bottom: none; flex: 1; align-items: flex-start; }
+.epl-right-meta-label { color: #777; font-size: 8px; }
+.epl-right-meta-val   { font-weight: 600; font-size: 9px; }
+
 .epl-editable { min-width: 40px; min-height: 12px; outline: none; border-bottom: 1px dashed #aaa; cursor: text; display: inline-block; }
 .epl-editable:empty::before { content: attr(data-placeholder); color: #bbb; font-style: italic; }
 
@@ -241,13 +250,6 @@ select {
 .epl-meta-cell:last-child { border-right: none; }
 .epl-meta-cell .cell-label { font-size: 8px; color: #777; margin-bottom: 1px; }
 .epl-meta-cell .cell-val   { font-weight: 600; font-size: 10px; }
-
-.epl-desc-row            { padding: 4px 7px; border-bottom: 2px solid #000; font-size: 10px; }
-.epl-desc-row .cell-label { font-size: 8px; color: #777; margin-bottom: 1px; }
-
-.epl-right-meta      { border-left: 2px solid #000; font-size: 9px; }
-.epl-right-meta-row  { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #ccc; padding: 3px 5px; gap: 4px; min-height: 0; }
-.epl-right-meta-row:last-child { border-bottom: none; }
 .epl-right-meta-label { color: #777; font-size: 8px; }
 .epl-right-meta-val   { font-weight: 600; font-size: 9px; }
 
@@ -857,7 +859,7 @@ function genererEPL() {
               <div class="cell-val">${v('maskin')}</div>
             </div>
           </div>
-          <div class="epl-desc-row">
+          <div class="epl-desc-row" style="flex:1;min-height:32px;">
             <div class="cell-label">Beskrivelse:</div>
             <div>${v('beskrivelse')}</div>
           </div>
@@ -883,7 +885,7 @@ function genererEPL() {
               <div class="epl-right-meta-val epl-editable" contenteditable="true" data-placeholder="Skriv her...">${v('datoGodkjent')}</div>
             </div>
           </div>
-          <div class="epl-right-meta-row">
+          <div class="epl-right-meta-row" style="flex:1;">
             <div>
               <div class="epl-right-meta-label">Sign.:</div>
               <div class="epl-right-meta-val">${v('signLaget')}</div>
