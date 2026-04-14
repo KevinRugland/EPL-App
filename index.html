@@ -228,7 +228,7 @@ select {
 .epl-right-block { border-left: 2px solid #000; display: flex; align-items: center; justify-content: center; padding: 6px 12px; min-width: 130px; background: white; }
 .epl-logo        { width: 140px; height: auto; display: block; }
 
-.epl-body-with-meta { display: grid; grid-template-columns: 1fr 155px; align-items: start; }
+.epl-body-with-meta { display: grid; grid-template-columns: 1fr 155px; align-items: stretch; }
 .epl-meta           { border-bottom: 1px solid #000; }
 .epl-meta-row       { display: grid; border-bottom: 1px solid #ccc; }
 .epl-meta-row:last-child { border-bottom: none; }
@@ -453,7 +453,6 @@ select {
         <option value="1">1 bilde</option>
         <option value="2">2 bilder</option>
         <option value="3" selected>3 bilder</option>
-        <option value="4">4 bilder</option>
       </select>
     </div>
   </div>
@@ -666,11 +665,15 @@ function byggBildeblokker() {
         📱 Tips: Ta bildet i <strong>stående (portrett)</strong> orientasjon for best resultat i dokumentet.
       </div>
       <div class="upload-zone" id="zone${i}">
-        <input type="file" accept="image/*" data-steg="${i}">
-        <div class="upload-icon">📷</div>
-        <div class="upload-txt">
-          <strong>Ta bilde eller velg fra galleri</strong>
-          Trykk her for å åpne kamera eller galleri
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <label style="flex:1;min-width:120px;max-width:180px;cursor:pointer;background:var(--red);color:white;border-radius:4px;padding:12px 8px;text-align:center;font-weight:700;font-size:14px;">
+            📷 Ta bilde
+            <input type="file" accept="image/*" capture="environment" data-steg="${i}" style="display:none;">
+          </label>
+          <label style="flex:1;min-width:120px;max-width:180px;cursor:pointer;background:#1a1a1a;color:white;border-radius:4px;padding:12px 8px;text-align:center;font-weight:700;font-size:14px;">
+            🖼️ Velg fra galleri
+            <input type="file" accept="image/*" data-steg="${i}" style="display:none;">
+          </label>
         </div>
       </div>
       <div class="img-caption">
@@ -679,14 +682,16 @@ function byggBildeblokker() {
       </div>`;
     container.appendChild(div);
 
-    // Fil-input lytter
-    div.querySelector('input[type=file]').addEventListener('change', function() {
-      const steg = parseInt(this.dataset.steg);
-      const file = this.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) { imgs[steg] = e.target.result; visForhåndsvisning(steg); };
-      reader.readAsDataURL(file);
+    // Fil-input lyttere — begge knapper
+    div.querySelectorAll('input[type=file]').forEach(function(input) {
+      input.addEventListener('change', function() {
+        const steg = parseInt(this.dataset.steg);
+        const file = this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) { imgs[steg] = e.target.result; visForhåndsvisning(steg); };
+        reader.readAsDataURL(file);
+      });
     });
 
     // Gjenopprett bilde hvis det allerede er lastet opp
@@ -711,22 +716,25 @@ function fjernBilde(n) {
   const zone = document.getElementById('zone' + n);
   zone.style.cssText = '';
   zone.innerHTML = `
-    <div class="hint-text" style="margin:10px 12px 0;">
-      📱 Tips: Ta bildet i <strong>stående (portrett)</strong> orientasjon for best resultat i dokumentet.
-    </div>
-    <input type="file" accept="image/*" data-steg="${n}">
-    <div class="upload-icon">📷</div>
-    <div class="upload-txt">
-      <strong>Ta bilde eller velg fra galleri</strong>
-      Trykk her for å åpne kamera eller galleri
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <label style="flex:1;min-width:120px;max-width:180px;cursor:pointer;background:var(--red);color:white;border-radius:4px;padding:12px 8px;text-align:center;font-weight:700;font-size:14px;">
+        📷 Ta bilde
+        <input type="file" accept="image/*" capture="environment" data-steg="${n}" style="display:none;">
+      </label>
+      <label style="flex:1;min-width:120px;max-width:180px;cursor:pointer;background:#1a1a1a;color:white;border-radius:4px;padding:12px 8px;text-align:center;font-weight:700;font-size:14px;">
+        🖼️ Velg fra galleri
+        <input type="file" accept="image/*" data-steg="${n}" style="display:none;">
+      </label>
     </div>`;
-  zone.querySelector('input[type=file]').addEventListener('change', function() {
-    const steg = parseInt(this.dataset.steg);
-    const file = this.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e) { imgs[steg] = e.target.result; visForhåndsvisning(steg); };
-    reader.readAsDataURL(file);
+  zone.querySelectorAll('input[type=file]').forEach(function(input) {
+    input.addEventListener('change', function() {
+      const steg = parseInt(this.dataset.steg);
+      const file = this.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) { imgs[steg] = e.target.result; visForhåndsvisning(steg); };
+      reader.readAsDataURL(file);
+    });
   });
 }
 
@@ -972,7 +980,7 @@ function resetAll() {
   if (datoG) datoG.value = '';
   document.getElementById('datoOpprettet').valueAsDate = new Date();
   document.getElementById('antallBilder').value = '3';
-  for (let i = 1; i <= 4; i++) { imgs[i] = null; imgData['cap'+i] = ''; }
+  for (let i = 1; i <= 3; i++) { imgs[i] = null; imgData['cap'+i] = ''; }
   layout = 'grid';
   document.querySelectorAll('.layout-opt').forEach(function(o) { o.classList.remove('selected'); });
   document.querySelector('[data-layout="grid"]').classList.add('selected');
