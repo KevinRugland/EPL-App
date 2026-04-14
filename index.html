@@ -229,12 +229,13 @@ select {
 .epl-logo        { width: 140px; height: auto; display: block; }
 
 .epl-body-with-meta { display: grid; grid-template-columns: 1fr 155px; align-items: stretch; }
-.epl-meta           { border-bottom: 1px solid #000; }
+.epl-left-meta { display: flex; flex-direction: column; }
+.epl-meta           { border-bottom: 2px solid #000; }
 .epl-meta-row       { display: grid; border-bottom: 1px solid #ccc; }
 .epl-meta-row:last-child { border-bottom: none; }
 .epl-meta-row.r1    { grid-template-columns: 2fr 1fr; }
 
-.epl-desc-row            { padding: 4px 7px; border-bottom: 2px solid #000; font-size: 10px; display: flex; flex-direction: column; flex: 1; }
+.epl-desc-row            { padding: 4px 7px; font-size: 10px; flex: 1; }
 .epl-desc-row .cell-label { font-size: 8px; color: #777; margin-bottom: 1px; }
 
 .epl-right-meta      { border-left: 2px solid #000; font-size: 9px; display: flex; flex-direction: column; }
@@ -848,7 +849,7 @@ function genererEPL() {
     </div>
     <div class="epl-meta">
       <div class="epl-body-with-meta">
-        <div>
+        <div class="epl-left-meta">
           <div class="epl-meta-row r1">
             <div class="epl-meta-cell">
               <div class="cell-label">Tittel:</div>
@@ -859,7 +860,7 @@ function genererEPL() {
               <div class="cell-val">${v('maskin')}</div>
             </div>
           </div>
-          <div class="epl-desc-row" style="flex:1;min-height:32px;">
+          <div class="epl-desc-row">
             <div class="cell-label">Beskrivelse:</div>
             <div>${v('beskrivelse')}</div>
           </div>
