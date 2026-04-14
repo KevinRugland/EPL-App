@@ -652,11 +652,11 @@ function byggBildeblokker() {
         📱 Tips: Ta bildet i <strong>stående (portrett)</strong> orientasjon for best resultat i dokumentet.
       </div>
       <div class="upload-zone" id="zone${i}">
-        <input type="file" accept="image/*" capture="environment" data-steg="${i}">
+        <input type="file" accept="image/*" data-steg="${i}">
         <div class="upload-icon">📷</div>
         <div class="upload-txt">
           <strong>Ta bilde eller velg fra galleri</strong>
-          Trykk her for å åpne kamera
+          Trykk her for å åpne kamera eller galleri
         </div>
       </div>
       <div class="img-caption">
@@ -700,11 +700,11 @@ function fjernBilde(n) {
     <div class="hint-text" style="margin:10px 12px 0;">
       📱 Tips: Ta bildet i <strong>stående (portrett)</strong> orientasjon for best resultat i dokumentet.
     </div>
-    <input type="file" accept="image/*" capture="environment" data-steg="${n}">
+    <input type="file" accept="image/*" data-steg="${n}">
     <div class="upload-icon">📷</div>
     <div class="upload-txt">
       <strong>Ta bilde eller velg fra galleri</strong>
-      Trykk her for å åpne kamera
+      Trykk her for å åpne kamera eller galleri
     </div>`;
   zone.querySelector('input[type=file]').addEventListener('change', function() {
     const steg = parseInt(this.dataset.steg);
@@ -892,9 +892,20 @@ function hidePDF() {
 
 function doPrint() {
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-  if (isIOS) {
+  const isPWA = window.navigator.standalone === true;
+
+  if (isIOS && isPWA) {
+    // PWA på iOS — window.print() fungerer ikke, vis tydelig instruksjon
     document.getElementById('pdfInfoBar').textContent =
-      '📌 iPhone: Trykk Del-knappen (□↑) i Safari → "Skriv ut" → klyp ut på forhåndsvisning for å lagre som PDF';
+      '📌 For å lagre PDF: Trykk "Lukk", åpne siden i Safari via denne lenken og bruk Del-knappen (□↑) → "Skriv ut"';
+    document.getElementById('pdfInfoBar').style.background = '#cc1515';
+  } else if (isIOS) {
+    // Safari på iOS — prøv print, vis instruksjon som backup
+    try {
+      window.print();
+    } catch(e) {}
+    document.getElementById('pdfInfoBar').textContent =
+      '📌 Hvis utskrift ikke åpnet: Trykk Del-knappen (□↑) → "Skriv ut" → klyp ut på forhåndsvisning';
   } else {
     window.print();
   }
