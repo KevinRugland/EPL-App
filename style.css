@@ -18,9 +18,9 @@ body { background: var(--bg); font-family: var(--font); color: var(--dark); min-
    TOPBAR OG PROGRESS
 ════════════════════════════════════════ */
 .topbar { background: var(--dark); color: white; height: 52px; padding: 0 16px; display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 200; }
-.topbar-brand { font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red); white-space: nowrap; }
-.topbar-sep   { width: 1px; height: 20px; background: #444; flex-shrink: 0; }
-.topbar-title { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topbar-left    { display: flex; flex-direction: column; align-items: flex-start; }
+.topbar-brand   { font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red); white-space: nowrap; }
+.topbar-subtitle { font-size: 11px; color: #555; font-weight: normal; text-transform: none; letter-spacing: normal; white-space: nowrap; }
 .topbar-step    { font-size: 11px; color: #888; white-space: nowrap; flex-shrink: 0; }
 .topbar-version { font-size: 10px; color: #555; white-space: nowrap; flex-shrink: 0; margin-right: 6px; }
 
