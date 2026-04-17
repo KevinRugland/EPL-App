@@ -240,9 +240,17 @@ select {
     margin: 12mm 10mm;
   }
 
+  html {
+    background: white !important;
+  }
   html, body {
     width: 210mm;
     height: 297mm;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  body {
+    background: white !important;
     margin: 0 !important;
     padding: 0 !important;
   }
@@ -257,7 +265,7 @@ select {
     width: 100% !important;
     height: auto !important;
     min-height: 0 !important;
-    background: white !important;
+    background: transparent !important;
     overflow: visible !important;
     padding: 0 !important;
     margin: 0 !important;
