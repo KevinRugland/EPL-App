@@ -2,7 +2,7 @@
    KONFIGURASJON — endre her
 ════════════════════════════════════════ */
 const BEDRIFT      = 'Egenes Brannteknikk'; // ← Firmanavn i topbar
-const APP_VERSION  = 'v1.0.9';
+const APP_VERSION  = 'v1.0.10';
 
 /* ════════════════════════════════════════
    TILSTAND
@@ -266,89 +266,11 @@ function byggOppsummering() {
    EPL-DOKUMENT
 ════════════════════════════════════════ */
 function genererEPL() {
-  const n    = parseInt(v('antallBilder')) || 3;
-  const noImg = '<div class="no-img-box">Ingen bilde</div>';
-
-  // Bygg innhold: alltid bilde venstre, tekst høyre
-  const innhold = `<div class="epl-layout-side imgs-${n}">${
-    Array.from({length: n}, function(_, idx) {
-      const i = idx + 1;
-      return `<div class="epl-side-row">
-        ${imgs[i] ? `<img src="${imgs[i]}" alt="Steg ${i}">` : noImg}
-        <div class="epl-side-text">${imgData['cap'+i] || ''}</div>
-      </div>`;
-    }).join('')
-  }</div>`;
-
-  document.getElementById('eplDocOutput').innerHTML = `
-  <div class="epl-doc">
-    <table class="epl-table">
-      <tbody>
-        <!-- RAD 1: Tittel + EPL-nr + Logo -->
-        <tr class="epl-tr-header">
-          <td class="epl-td-title" colspan="2">
-            <span class="epl-main-title">ETTPUNKTSLEKSJON</span>
-          </td>
-          <td class="epl-td-eplnr">
-            <div class="cell-label">EPL nr.</div>
-            <div class="epl-epl-nr">${v('eplNr') || ''}</div>
-          </td>
-          <td class="epl-td-logo" rowspan="4">
-            <img class="epl-logo" src="Egenes_Brannteknikk.png" alt="Egenes Brannteknikk">
-          </td>
-        </tr>
-
-        <!-- RAD 2: Tittel + Maskin + Laget av / Godkjent av -->
-        <tr>
-          <td style="width:40%;">
-            <div class="cell-label">Tittel:</div>
-            <div class="cell-val">${v('tittel')}</div>
-          </td>
-          <td style="width:20%;">
-            <div class="cell-label">Maskin:</div>
-            <div class="cell-val">${v('maskin')}</div>
-          </td>
-          <td>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
-              <div><div class="cell-label">Laget av:</div><div class="cell-val">${v('lagetAv')}</div></div>
-              <div><div class="cell-label">Godkjent av:</div><div class="epl-editable cell-val" contenteditable="true" data-placeholder="Skriv her...">${v('godkjentAv')}</div></div>
-            </div>
-          </td>
-        </tr>
-
-        <!-- RAD 3: Beskrivelse + Dato -->
-        <tr>
-          <td colspan="2" rowspan="2" style="vertical-align:top; min-height:30px;">
-            <div class="cell-label">Beskrivelse:</div>
-            <div class="cell-val">${v('beskrivelse')}</div>
-          </td>
-          <td>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
-              <div><div class="cell-label">Dato:</div><div class="cell-val">${v('datoOpprettet')}</div></div>
-              <div><div class="cell-label">Dato:</div><div class="epl-editable cell-val" contenteditable="true" data-placeholder="Skriv her...">${v('datoGodkjent')}</div></div>
-            </div>
-          </td>
-        </tr>
-
-        <!-- RAD 4: Sign -->
-        <tr>
-          <td>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
-              <div><div class="cell-label">Sign.:</div><div class="cell-val">${v('signLaget')}</div></div>
-              <div><div class="cell-label">Sign.:</div><div class="epl-editable cell-val" contenteditable="true" data-placeholder="Skriv her...">${v('signGodkjent')}</div></div>
-            </div>
-          </td>
-        </tr>
-
-        <!-- INNHOLD -->
-        <tr>
-          <td colspan="4" class="epl-td-content">
-            ${innhold}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>`;
+  const container = document.getElementById('eplDocOutput');
+  container.innerHTML = `
+    <div class="epl-doc">
+    </div>
+  `;
 }
 
 /* ════════════════════════════════════════
