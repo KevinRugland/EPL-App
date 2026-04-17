@@ -237,7 +237,7 @@ select {
 @media print {
   @page {
     size: A4 portrait;
-    margin: 10mm;
+    margin: 0 auto;
   }
 
   html {
@@ -275,8 +275,8 @@ select {
 
   /* EPL document — single page, border only */
   .epl-doc {
-    width: auto !important;
-    height: 277mm !important;
+    width: 190mm !important;
+    height: 210mm !important;
     border: 2px solid #000 !important;
     background: white !important;
     box-sizing: border-box !important;
