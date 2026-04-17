@@ -275,8 +275,8 @@ select {
 
   /* EPL document — single page, border only */
   .epl-doc {
-    width: 190mm !important;
-    height: 210mm !important;
+    width: auto !important;
+    height: 277mm !important;
     border: 2px solid #000 !important;
     background: white !important;
     box-sizing: border-box !important;
