@@ -244,7 +244,7 @@ select {
     background: white !important;
   }
   html, body {
-    width: 210mm;
+    width: auto;
     height: 277mm;
     margin: 0 !important;
     padding: 0 !important;
