@@ -186,8 +186,8 @@ select {
 ════════════════════════════════════════ */
 #pdfScreen {
   display: none; position: fixed; inset: 0; z-index: 9999;
-  background: #333; flex-direction: column;
-  -webkit-overflow-scrolling: touch;
+  background: #e8e8e8; flex-direction: column;
+  overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 20px;
 }
 #pdfScreen.visible { display: flex; }
 
@@ -196,7 +196,6 @@ select {
 
 .pdf-info-bar { background: #1a5fb4; color: white; padding: 8px 14px; font-size: 12px; font-weight: 600; flex-shrink: 0; text-align: center; line-height: 1.4; }
 
-.pdf-scroll-area { flex: 1; overflow-y: auto; padding: 16px; -webkit-overflow-scrolling: touch; }
 
 /* ════════════════════════════════════════
    EPL-DOKUMENT — tabell-basert
@@ -295,16 +294,6 @@ select {
   }
   .pdf-toolbar,
   .pdf-info-bar { display: none !important; }
-  .pdf-scroll-area {
-    padding: 0 !important;
-    margin: 0 !important;
-    overflow: visible !important;
-    background: white !important;
-    min-height: 0 !important;
-    height: auto !important;
-    width: 100% !important;
-  }
-
   /* EPL document — force single A4 page */
   .epl-doc {
     width: 190mm !important;
