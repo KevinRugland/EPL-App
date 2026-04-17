@@ -269,7 +269,7 @@ select {
 @media print {
   @page {
     size: A4 portrait;
-    margin: 8mm 10mm;
+    margin: 12mm 10mm;
   }
 
   html, body {
@@ -306,8 +306,8 @@ select {
   /* EPL document — force single A4 page */
   .epl-doc {
     width: 190mm !important;
-    height: 281mm !important;   /* 297mm - 8mm top - 8mm bottom margins */
-    max-height: 281mm !important;
+    height: 249mm !important;
+    max-height: 249mm !important;
     overflow: hidden !important;
     border: 2px solid #000 !important;
     display: flex !important;
@@ -337,6 +337,7 @@ select {
   .epl-content {
     flex: 1 1 0 !important;
     min-height: 0 !important;
+    height: 0 !important;
     display: flex !important;
     flex-direction: column !important;
     overflow: hidden !important;
