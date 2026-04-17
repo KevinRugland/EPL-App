@@ -300,14 +300,16 @@ select {
     margin: 0 !important;
     overflow: visible !important;
     background: white !important;
+    min-height: 0 !important;
+    height: auto !important;
     width: 100% !important;
   }
 
   /* EPL document — force single A4 page */
   .epl-doc {
     width: 190mm !important;
-    height: 249mm !important;
-    max-height: 249mm !important;
+    height: 210mm !important;
+    max-height: 210mm !important;
     overflow: hidden !important;
     border: 2px solid #000 !important;
     display: flex !important;
