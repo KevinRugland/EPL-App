@@ -237,7 +237,7 @@ select {
 @media print {
   @page {
     size: A4 portrait;
-    margin: 12mm 10mm;
+    margin: 10mm;
   }
 
   html {
@@ -245,7 +245,7 @@ select {
   }
   html, body {
     width: 210mm;
-    height: auto;
+    height: 277mm;
     margin: 0 !important;
     padding: 0 !important;
   }
