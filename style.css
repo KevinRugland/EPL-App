@@ -196,17 +196,40 @@ select {
 
 .pdf-info-bar { background: #1a5fb4; color: white; padding: 8px 14px; font-size: 12px; font-weight: 600; flex-shrink: 0; text-align: center; line-height: 1.4; }
 
-
 /* ════════════════════════════════════════
-   EPL-DOKUMENT
+   EPL-DOKUMENT — clean slate (v1.0.10+)
 ════════════════════════════════════════ */
 .epl-doc {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  color: #000;
+  background: white;
   width: 190mm;
   height: 210mm;
   border: 2px solid #000;
-  background: white;
   box-sizing: border-box;
 }
+
+/* ════════════════════════════════════════
+   EPL HEADER — ny klasse-basert struktur
+════════════════════════════════════════ */
+.epl-header { width: 100%; }
+.epl-header-table { width: 100%; border-collapse: collapse; border: 2px solid #000; table-layout: fixed; }
+.epl-header-table td { border: 1px solid #ccc; padding: 3px 6px; vertical-align: top; font-size: 10px; }
+.epl-title-cell  { border: none; border-right: 1px solid #000; padding: 6px 10px; vertical-align: middle; }
+.epl-eplnr-cell  { border: none; border-right: 2px solid #000; padding: 4px 8px; vertical-align: middle; width: 160px; }
+.epl-logo-cell   { border: none; padding: 4px 8px; vertical-align: middle; text-align: center; width: 140px; }
+.epl-tr-header td { border-bottom: 2px solid #000; }
+
+.epl-main-title { font-size: 20px; font-weight: 900; font-family: Arial Black, Arial, sans-serif; }
+.epl-logo       { width: 130px; height: auto; display: block; }
+.epl-epl-nr     { font-size: 13px; font-weight: 700; }
+
+.cell-label { font-size: 8px; color: #777; margin-bottom: 1px; }
+.cell-val   { font-weight: 600; font-size: 10px; }
+
+.epl-editable { min-width: 40px; outline: none; border-bottom: 1px dashed #aaa; cursor: text; display: inline-block; font-size: 9px; }
+.epl-editable:empty::before { content: attr(data-placeholder); color: #bbb; font-style: italic; }
 
 /* ════════════════════════════════════════
    PRINT — A4 stående
@@ -241,6 +264,7 @@ select {
   }
   .pdf-toolbar,
   .pdf-info-bar { display: none !important; }
+
   /* EPL document — single page, border only */
   .epl-doc {
     width: 190mm !important;
@@ -252,4 +276,60 @@ select {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
+
+  /* Header */
+  .epl-header {
+    width: 100% !important;
+  }
+
+  .epl-header-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    border: 2px solid #000 !important;
+    table-layout: fixed !important;
+  }
+
+  .epl-header-table td {
+    border: 1px solid #ccc !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .epl-title-cell {
+    border: none !important;
+    border-right: 1px solid #000 !important;
+    padding: 6px 10px !important;
+    vertical-align: middle !important;
+  }
+
+  .epl-eplnr-cell {
+    border: none !important;
+    border-right: 2px solid #000 !important;
+    padding: 4px 8px !important;
+    vertical-align: middle !important;
+  }
+
+  .epl-logo-cell {
+    border: none !important;
+    padding: 4px 8px !important;
+    vertical-align: middle !important;
+    text-align: center !important;
+  }
+
+  .epl-logo {
+    width: 130px !important;
+    height: auto !important;
+    display: block !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .epl-tr-header td {
+    border-bottom: 2px solid #000 !important;
+  }
+
+  /* Hide UI controls */
+  .epl-img-controls,
+  .img-rotate-btn,
+  .topbar-version { display: none !important; }
 }
