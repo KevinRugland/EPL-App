@@ -1,7 +1,8 @@
 /* ════════════════════════════════════════
    KONFIGURASJON — endre her
 ════════════════════════════════════════ */
-const BEDRIFT = 'Egenes Brannteknikk'; // ← Firmanavn i topbar
+const BEDRIFT      = 'Egenes Brannteknikk'; // ← Firmanavn i topbar
+const APP_VERSION  = 'v1.0.7';
 
 /* ════════════════════════════════════════
    TILSTAND
@@ -16,6 +17,7 @@ const imgData = {};
    INITIALISERING
 ════════════════════════════════════════ */
 document.getElementById('topbarBrand').textContent = BEDRIFT;
+document.getElementById('topbarVersion').textContent = APP_VERSION;
 document.getElementById('datoOpprettet').valueAsDate = new Date();
 
 // Knytt alle knapper til funksjoner her — ingen onclick i HTML
@@ -111,7 +113,7 @@ function validateSteg1() {
         el.style.boxShadow = '0 0 0 3px rgba(204,21,21,0.15)';
         setTimeout(function() { el.style.borderColor = ''; el.style.boxShadow = ''; }, 2500);
       }
-      showToast('⚠️ Fyll ut alle påkrevde felt');
+      showToast('Fyll ut alle påkrevde felt');
       return false;
     }
   }
@@ -136,16 +138,16 @@ function byggBildeblokker() {
         <span class="img-opt">Valgfritt</span>
       </div>
       <div class="hint-text" style="margin:10px 12px 0;">
-        📱 Tips: Ta bildet i <strong>stående (portrett)</strong> orientasjon for best resultat i dokumentet.
+        Tips: Ta bildet i <strong>stående (portrett)</strong> orientasjon for best resultat i dokumentet.
       </div>
       <div class="upload-zone" id="zone${i}">
         <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-          <label style="flex:1;min-width:120px;max-width:180px;cursor:pointer;background:var(--red);color:white;border-radius:4px;padding:12px 8px;text-align:center;font-weight:700;font-size:14px;">
-            📷 Ta bilde
+          <label class="btn btn-primary" style="max-width:180px;">
+            Ta bilde
             <input type="file" accept="image/*" capture="environment" data-steg="${i}" style="display:none;">
           </label>
-          <label style="flex:1;min-width:120px;max-width:180px;cursor:pointer;background:#1a1a1a;color:white;border-radius:4px;padding:12px 8px;text-align:center;font-weight:700;font-size:14px;">
-            🖼️ Velg fra galleri
+          <label class="btn btn-dark" style="max-width:180px;">
+            Velg fra galleri
             <input type="file" accept="image/*" data-steg="${i}" style="display:none;">
           </label>
         </div>
@@ -191,12 +193,12 @@ function fjernBilde(n) {
   zone.style.cssText = '';
   zone.innerHTML = `
     <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-      <label style="flex:1;min-width:120px;max-width:180px;cursor:pointer;background:var(--red);color:white;border-radius:4px;padding:12px 8px;text-align:center;font-weight:700;font-size:14px;">
-        📷 Ta bilde
+      <label class="btn btn-primary" style="max-width:180px;">
+        Ta bilde
         <input type="file" accept="image/*" capture="environment" data-steg="${n}" style="display:none;">
       </label>
-      <label style="flex:1;min-width:120px;max-width:180px;cursor:pointer;background:#1a1a1a;color:white;border-radius:4px;padding:12px 8px;text-align:center;font-weight:700;font-size:14px;">
-        🖼️ Velg fra galleri
+      <label class="btn btn-dark" style="max-width:180px;">
+        Velg fra galleri
         <input type="file" accept="image/*" data-steg="${n}" style="display:none;">
       </label>
     </div>`;
@@ -399,7 +401,7 @@ function doPrint() {
   if (isIOS && isPWA) {
     // PWA på iOS — window.print() fungerer ikke, vis tydelig instruksjon
     document.getElementById('pdfInfoBar').textContent =
-      '📌 For å lagre PDF: Trykk "Lukk", åpne siden i Safari via denne lenken og bruk Del-knappen (□↑) → "Skriv ut"';
+      'NB: For å lagre PDF: Trykk "Lukk", åpne siden i Safari og bruk Del-knappen (□↑) → "Skriv ut"';
     document.getElementById('pdfInfoBar').style.background = '#cc1515';
   } else if (isIOS) {
     // Safari på iOS — prøv print, vis instruksjon som backup
@@ -407,7 +409,7 @@ function doPrint() {
       window.print();
     } catch(e) {}
     document.getElementById('pdfInfoBar').textContent =
-      '📌 Hvis utskrift ikke åpnet: Trykk Del-knappen (□↑) → "Skriv ut" → klyp ut på forhåndsvisning';
+      'NB: Hvis utskrift ikke åpnet: Trykk Del-knappen (□↑) → "Skriv ut" → klyp ut på forhåndsvisning';
   } else {
     window.print();
   }

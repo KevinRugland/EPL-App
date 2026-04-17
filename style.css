@@ -21,7 +21,8 @@ body { background: var(--bg); font-family: var(--font); color: var(--dark); min-
 .topbar-brand { font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red); white-space: nowrap; }
 .topbar-sep   { width: 1px; height: 20px; background: #444; flex-shrink: 0; }
 .topbar-title { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.topbar-step  { margin-left: auto; font-size: 11px; color: #888; white-space: nowrap; flex-shrink: 0; }
+.topbar-step    { font-size: 11px; color: #888; white-space: nowrap; flex-shrink: 0; }
+.topbar-version { font-size: 10px; color: #555; white-space: nowrap; flex-shrink: 0; margin-right: 6px; }
 
 .progress      { height: 3px; background: #2a2a2a; }
 .progress-fill { height: 100%; background: var(--red); transition: width 0.35s ease; width: 0%; }
@@ -153,8 +154,9 @@ select {
 }
 .btn:active   { opacity: 0.8; }
 .btn-primary  { background: var(--red); border-color: var(--red); color: white; }
+.btn-dark     { background: var(--dark); border-color: var(--dark); color: white; }
 .btn-back     { flex: 0 0 80px; font-size: 13px; }
-.btn-blue     { background: #1a5fb4; border-color: #1a5fb4; color: white; font-size: 14px; }
+.btn-blue     { background: #1a5fb4; border-color: #1a5fb4; color: white; }
 .btn-full     { width: 100%; }
 .btn:disabled { opacity: 0.35; pointer-events: none; }
 

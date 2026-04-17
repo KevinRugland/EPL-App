@@ -21,6 +21,8 @@
   <span class="topbar-brand" id="topbarBrand">EPL</span>
   <div class="topbar-sep"></div>
   <span class="topbar-title">Ettpunktsleksjon</span>
+  <div style="flex:1"></div>
+  <span class="topbar-version" id="topbarVersion"></span>
   <span class="topbar-step" id="stepInd">Steg 1 av 4</span>
 </div>
 <div class="progress">
@@ -40,7 +42,7 @@
     <div class="field">
       <label>EPL-nummer</label>
       <input type="text" id="eplNr" placeholder="Eks: B09.09-001" autocomplete="off">
-      <div class="hint-text">✍️ Valgfritt — fylles ut av godkjenner. Refererer til punktet i arbeidsbeskrivelsen hvor oppgaven hører til.</div>
+      <div class="hint-text">Valgfritt — fylles ut av godkjenner. Refererer til punktet i arbeidsbeskrivelsen hvor oppgaven hører til.</div>
     </div>
 
     <div class="row2">
@@ -85,7 +87,7 @@
 
     <div class="divider"></div>
     <div class="sec-lbl">Godkjent av</div>
-    <div class="hint-text" style="margin-bottom:12px;">✍️ Fylles ut av godkjenner — disse feltene kan stå tomme og fylles inn digitalt i PDF på PC.</div>
+    <div class="hint-text" style="margin-bottom:12px;">Fylles ut av godkjenner — disse feltene kan stå tomme og fylles inn digitalt i PDF på PC.</div>
 
     <div class="row2">
       <div class="field">
@@ -168,11 +170,11 @@
   <!-- ── FULLFØRT ── -->
   <div class="step" id="stepDone">
     <div class="success">
-      <div class="success-icon">✅</div>
+      <div class="success-icon">✓</div>
       <div class="success-title">EPL er klar!</div>
       <div class="success-sub">Åpne dokumentet for å lagre som PDF.</div>
       <div class="success-btns">
-        <button class="btn btn-primary" id="btnApnePDF">📄 Åpne EPL-dokument</button>
+        <button class="btn btn-primary" id="btnApnePDF">Åpne EPL-dokument</button>
         <button class="btn" id="btnTilbakeEndringer">← Gjør endringer</button>
         <button class="btn" id="btnNyEPL">+ Ny EPL</button>
       </div>
@@ -195,12 +197,12 @@
 <!-- PDF-SKJERM -->
 <div id="pdfScreen">
   <div class="pdf-toolbar">
-    <button class="btn btn-primary" id="btnPrint">🖨️ Lagre som PDF</button>
-    <a id="btnSendEpost" href="#" class="btn btn-blue">✉️ Send e-post</a>
+    <button class="btn btn-primary" id="btnPrint">Lagre som PDF</button>
+    <a id="btnSendEpost" href="#" class="btn btn-blue">Send e-post</a>
     <button class="btn" id="btnLukkPDF">✕ Lukk</button>
   </div>
   <div class="pdf-info-bar" id="pdfInfoBar">
-    📌 Lagre PDF først, legg den ved manuelt i e-posten
+    NB: Lagre PDF først – legg den ved manuelt i e-posten
   </div>
   <div class="pdf-scroll-area">
     <div id="eplDocOutput"></div>
