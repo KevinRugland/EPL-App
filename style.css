@@ -266,7 +266,7 @@ select {
     height: auto !important;
     min-height: 0 !important;
     background: transparent !important;
-    overflow: visible !important;
+    overflow: hidden !important;
     padding: 0 !important;
     margin: 0 !important;
   }
