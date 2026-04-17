@@ -245,7 +245,7 @@ select {
   }
   html, body {
     width: 210mm;
-    height: 297mm;
+    height: auto;
     margin: 0 !important;
     padding: 0 !important;
   }

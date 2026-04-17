@@ -2,7 +2,7 @@
    KONFIGURASJON — endre her
 ════════════════════════════════════════ */
 const BEDRIFT      = 'Egenes Brannteknikk'; // ← Firmanavn i topbar
-const APP_VERSION  = 'v1.0.12';
+const APP_VERSION  = 'v1.0.13';
 
 /* ════════════════════════════════════════
    TILSTAND
