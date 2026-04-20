@@ -2,7 +2,7 @@
    KONFIGURASJON — endre her
 ════════════════════════════════════════ */
 const BEDRIFT      = 'Egenes Brannteknikk'; // ← Firmanavn i topbar
-const APP_VERSION  = 'v1.0.13';
+const APP_VERSION  = 'v1.0.14';
 
 /* ════════════════════════════════════════
    TILSTAND
@@ -456,6 +456,7 @@ updateUI();
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('sw.js').then(function(reg) {
+      reg.update();
       console.log('Service worker registrert:', reg.scope);
     }).catch(function(err) {
       console.log('Service worker feilet:', err);

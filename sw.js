@@ -3,7 +3,7 @@
 // Oppdater CACHE_VERSION ved hver ny deploy
 // ════════════════════════════════════════
 
-const CACHE_VERSION = 'epl-1.0.13';
+const CACHE_VERSION = 'epl-1.0.14';
 const CACHE_FILES = [
   '/EPL-App/',
   '/EPL-App/index.html',
@@ -30,10 +30,6 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Meldingslytter: tillat appen å trigge skipWaiting
-self.addEventListener('message', event => {
-  if (event.data === 'skipWaiting') self.skipWaiting();
-});
 
 // Fetch: serve fra cache, fall tilbake til nett
 self.addEventListener('fetch', function(event) {
