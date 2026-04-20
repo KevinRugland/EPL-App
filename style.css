@@ -255,14 +255,14 @@ select {
 
 .epl-logo-cell {
   width: 25%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   text-align: center;
   vertical-align: middle;
   padding: 4px 6px;
   border-left: 1px solid #000;
   border-bottom: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .epl-logo {
