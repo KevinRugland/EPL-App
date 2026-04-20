@@ -2,7 +2,7 @@
    KONFIGURASJON — endre her
 ════════════════════════════════════════ */
 const BEDRIFT      = 'Egenes Brannteknikk'; // ← Firmanavn i topbar
-const APP_VERSION  = 'v1.0.19';
+const APP_VERSION  = 'v1.0.20';
 
 /* ════════════════════════════════════════
    TILSTAND
@@ -267,95 +267,96 @@ function byggOppsummering() {
 ════════════════════════════════════════ */
 function genererEPL() {
   document.getElementById('eplDocOutput').innerHTML = `
-<div class="epl-doc">
+<div class="epl-document">
 
   <!-- HEADER -->
-  <table class="epl-header-table">
-    <colgroup>
-      <col class="epl-col-1">
-      <col class="epl-col-2">
-      <col class="epl-col-3">
-      <col class="epl-col-4">
-      <col class="epl-col-5">
-    </colgroup>
-    <tbody>
-      <tr class="epl-header-row-1">
-        <td colspan="2" class="epl-title-cell">ETTPUNKTSLEKSJON</td>
-        <td class="epl-eplnr-cell">
-          <span class="cell-label">EPL nr.</span>
-          <span class="cell-val">${v('eplNr')}</span>
-        </td>
-        <td class="epl-laget-revidert-cell">
-          <div class="epl-lr-line">
+  <div class="epl-header">
+    <table class="header-table">
+      <colgroup>
+        <col style="width:22%">
+        <col style="width:16%">
+        <col style="width:12%">
+        <col style="width:15%">
+        <col style="width:15%">
+        <col style="width:15%">
+        <col style="width:5%">
+      </colgroup>
+      <tbody>
+        <!-- RAD 1 -->
+        <tr>
+          <td colspan="3"><span class="epl-title-text">ETTPUNKTSLEKSJON</span></td>
+          <td>
+            <span class="cell-label">EPL nr.</span>
+            ${v('eplNr')}
+          </td>
+          <td>
             <span class="cell-label">Laget av:</span>
-            <span class="cell-val">${v('lagetAv')}</span>
-          </div>
-          <div class="epl-lr-line">
+            ${v('lagetAv')}
+          </td>
+          <td>
             <span class="cell-label">Revidert:</span>
-            <span class="cell-val epl-editable">${v('godkjentAv')}</span>
-          </div>
-        </td>
-        <td rowspan="3" class="epl-logo-cell">
-          <div class="epl-logo-wrap">
-            <img src="Egenes_Brannteknikk.png" class="epl-logo" alt="Egenes Brannteknikk">
-          </div>
-        </td>
-      </tr>
-      <tr class="epl-header-row-2">
-        <td class="epl-tittel-cell">
-          <span class="cell-label">Tittel:</span>
-          <span class="cell-val">${v('tittel')}</span>
-        </td>
-        <td class="epl-maskin-cell">
-          <span class="cell-label">Maskin:</span>
-          <span class="cell-val">${v('maskin')}</span>
-        </td>
-        <td colspan="2" class="epl-revisjon-cell">
-          <span class="cell-label">Revisjon:</span>
-          <span class="cell-val">${v('revisjon') || 'A'}</span>
-        </td>
-      </tr>
-      <tr class="epl-header-row-3">
-        <td colspan="3" class="epl-beskrivelse-cell">
-          <span class="cell-label">Beskrivelse:</span>
-          <span class="cell-val">${v('beskrivelse')}</span>
-        </td>
-        <td class="epl-dato-sign-cell">
-          <div class="epl-dato-sign-grid">
-            <div class="epl-ds-item">
-              <span class="cell-label">Dato:</span>
-              <span class="cell-val">${v('datoOpprettet')}</span>
-            </div>
-            <div class="epl-ds-item epl-field-border-left">
-              <span class="cell-label">Dato:</span>
-              <span class="cell-val epl-editable">${v('datoGodkjent')}</span>
-            </div>
-            <div class="epl-ds-item epl-ds-border-top">
-              <span class="cell-label">Sign.:</span>
-              <span class="cell-val epl-editable">${v('signLaget')}</span>
-            </div>
-            <div class="epl-ds-item epl-field-border-left epl-ds-border-top">
-              <span class="cell-label">Sign.:</span>
-              <span class="cell-val epl-editable">${v('signGodkjent')}</span>
-            </div>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+            ${v('godkjentAv')}
+          </td>
+          <td rowspan="3" class="logo-cell">
+            <img src="Egenes_Brannteknikk.png" alt="Egenes Brannteknikk logo">
+          </td>
+        </tr>
+        <!-- RAD 2 -->
+        <tr>
+          <td>
+            <span class="cell-label">Tittel:</span>
+            <strong>${v('tittel')}</strong>
+          </td>
+          <td>
+            <span class="cell-label">Maskin:</span>
+            ${v('maskin')}
+          </td>
+          <td>
+            <span class="cell-label">Revisjon:</span>
+            ${v('revisjon')}
+          </td>
+          <td>
+            <span class="cell-label">Dato:</span>
+            ${v('datoOpprettet')}
+          </td>
+          <td>
+            <span class="cell-label">Dato:</span>
+            ${v('datoGodkjent')}
+          </td>
+        </tr>
+        <!-- RAD 3 -->
+        <tr>
+          <td colspan="4">
+            <span class="cell-label">Beskrivelse:</span>
+            ${v('beskrivelse')}
+          </td>
+          <td>
+            <span class="cell-label">Sign.:</span>
+            ${v('signLaget')}
+          </td>
+          <td>
+            <span class="cell-label">Sign.:</span>
+            ${v('signGodkjent')}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-  <!-- INNHOLD: flex: 1 -->
+  <!-- INNHOLD -->
   <div class="epl-content">
-    ${[0,1,2].map(i => `
-      <div class="epl-img-cell${i === 2 ? ' epl-last-row' : ''}">
-        ${imgs[i+1]
-          ? `<img src="${imgs[i+1]}" class="epl-bilde" alt="Bilde ${i+1}">`
-          : `<span class="epl-ingen-bilde">Ingen bilde</span>`}
-      </div>
-      <div class="epl-text-cell${i === 2 ? ' epl-last-row' : ''}">
-        <span>${imgData['cap' + (i+1)] || ''}</span>
-      </div>
-    `).join('')}
+    <div class="image-cell">
+      ${imgs[1] ? `<img src="${imgs[1]}" alt="Bilde 1">` : '<span class="image-placeholder">Bilde 1</span>'}
+    </div>
+    <div class="text-cell">${imgData['cap1'] || ''}</div>
+    <div class="image-cell">
+      ${imgs[2] ? `<img src="${imgs[2]}" alt="Bilde 2">` : '<span class="image-placeholder">Bilde 2</span>'}
+    </div>
+    <div class="text-cell">${imgData['cap2'] || ''}</div>
+    <div class="image-cell">
+      ${imgs[3] ? `<img src="${imgs[3]}" alt="Bilde 3">` : '<span class="image-placeholder">Bilde 3</span>'}
+    </div>
+    <div class="text-cell">${imgData['cap3'] || ''}</div>
   </div>
 
 </div>`;
