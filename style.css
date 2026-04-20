@@ -196,77 +196,159 @@ select {
 
 .pdf-info-bar { background: #1a5fb4; color: white; padding: 8px 14px; font-size: 12px; font-weight: 600; flex-shrink: 0; text-align: center; line-height: 1.4; }
 
-/* === EPL DOCUMENT === */
-.epl-document {
-  display: flex;
-  flex-direction: column;
+/* ════════════════════════════════════════
+   EPL DOCUMENT
+════════════════════════════════════════ */
+.epl-doc {
   width: 190mm;
   height: 277mm;
   max-height: 277mm;
   overflow: hidden;
-  border: 1px solid #000000;
+  border: 2px solid #000;
+  background: white;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* === HEADER === */
-.epl-header {
-  flex-shrink: 0;
-}
+/* --- HEADER TABLE --- */
 
-table.header-table {
+/* Column widths */
+.epl-col-1 { width: 35%; }
+.epl-col-2 { width: 20%; }
+.epl-col-3 { width: 10%; }
+.epl-col-4 { width: 15%; }
+.epl-col-5 { width: 20%; }
+
+.epl-header-table {
   width: 100%;
   border-collapse: collapse;
+  flex-shrink: 0;
   table-layout: fixed;
 }
 
-table.header-table td {
-  border: 1px solid #000000;
-  padding: 3px 5px;
+.epl-header-table td {
+  border: 1px solid #000;
   vertical-align: top;
+  padding: 4px 6px;
   font-size: 9pt;
-  font-family: Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
 }
 
+/* Remove outer duplicate borders */
+.epl-header-table tr:first-child td { border-top: none; }
+.epl-header-table td:first-child { border-left: none; }
+.epl-header-table td:last-child { border-right: none; }
+
+/* RAD 1 */
+.epl-title-cell {
+  font-size: 20pt;
+  font-weight: bold;
+  vertical-align: middle;
+  padding: 6px 8px;
+}
+
+.epl-eplnr-cell { vertical-align: top; }
+
+.epl-laget-revidert-cell { vertical-align: top; }
+
+.epl-lr-line {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2px;
+}
+
+/* RAD 2 */
+.epl-tittel-cell,
+.epl-maskin-cell { vertical-align: top; }
+
+.epl-revisjon-cell { vertical-align: top; }
+
+/* RAD 3 */
+.epl-beskrivelse-cell {
+  vertical-align: top;
+  min-height: 32px;
+}
+
+.epl-dato-sign-cell {
+  padding: 0;
+  vertical-align: top;
+}
+
+.epl-dato-sign-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100%;
+}
+
+.epl-ds-item {
+  padding: 4px 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.epl-field-border-left { border-left: 1px solid #000; }
+
+.epl-ds-border-top { border-top: 1px solid #000; }
+
+/* Logo cell */
+.epl-logo-cell {
+  text-align: center;
+  vertical-align: middle;
+  padding: 4px 6px;
+  border-left: 1px solid #000;
+  border-right: none;
+}
+
+.epl-logo-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.epl-logo {
+  max-width: 100%;
+  max-height: 36px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Labels and values */
 .cell-label {
   font-size: 7pt;
-  color: #000;
+  color: #333;
   display: block;
-  margin-bottom: 1px;
+  line-height: 1.2;
 }
 
-.epl-title-text {
-  font-size: 18pt;
-  font-weight: bold;
-  font-family: Arial, Helvetica, sans-serif;
+.cell-val {
+  font-size: 9pt;
+  font-weight: 600;
+  display: block;
 }
 
-.logo-cell {
-  text-align: right;
-  vertical-align: middle;
-  padding: 4px;
+.epl-editable {
+  font-style: italic;
+  color: #888;
+  font-weight: normal;
+  border-bottom: 1px dashed #aaa;
+  min-height: 14px;
 }
 
-.logo-cell img {
-  max-height: 38px;
-  max-width: 100%;
-  width: auto;
-}
-
-/* === INNHOLD === */
+/* --- CONTENT SECTION --- */
 .epl-content {
   flex: 1;
-  overflow: hidden;
   display: grid;
   grid-template-columns: 2fr 3fr;
-  grid-template-rows: 1fr 1fr 1fr;
-  gap: 0;
-  border-top: 1px solid #000000;
+  min-height: 0;
+  border-top: 1px solid #000;
 }
 
-.image-cell {
-  border-right: 1px solid #000000;
-  border-bottom: 1px solid #000000;
+.epl-img-cell {
+  border-bottom: 1px solid rgba(0,0,0,0.4);
+  border-right: none;
+  border-left: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -274,52 +356,104 @@ table.header-table td {
   overflow: hidden;
 }
 
-.text-cell {
-  border-bottom: 1px solid #000000;
+.epl-text-cell {
+  border-bottom: 1px solid rgba(0,0,0,0.4);
   display: flex;
   align-items: center;
   padding: 10px 14px;
   font-size: 10pt;
-  font-family: Arial, Helvetica, sans-serif;
   line-height: 1.5;
+  overflow: hidden;
 }
 
-/* Siste rad: ingen border-bottom */
-.image-cell:nth-child(5),
-.text-cell:nth-child(6) {
+.epl-img-cell.epl-last-row,
+.epl-text-cell.epl-last-row {
   border-bottom: none;
 }
 
-.image-cell img {
+.epl-bilde {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
 }
 
-.image-placeholder {
-  color: #999;
+.epl-ingen-bilde {
+  color: #aaa;
   font-size: 9pt;
-  font-style: italic;
 }
 
-/* === PRINT === */
+/* Optional tillegg cell */
+.epl-tillegg-cell {
+  grid-column: 1 / -1;
+  border-top: 1px solid #000;
+  text-align: center;
+  padding: 8px 14px;
+  font-size: 9pt;
+}
+
+/* ════════════════════════════════════════
+   PRINT — A4 stående
+════════════════════════════════════════ */
 @media print {
   @page {
     size: A4 portrait;
     margin: 10mm;
   }
 
-  body { padding: 0; }
+  html, body {
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
 
-  .epl-document {
-    width: 190mm;
-    height: 277mm;
-    page-break-inside: avoid;
-    break-inside: avoid;
+  /* Hide everything except PDF screen */
+  body > * { display: none !important; }
+  #pdfScreen {
+    display: block !important;
+    position: static !important;
+    left: auto !important;
+    top: auto !important;
+    width: 100% !important;
+    background: transparent !important;
+    padding: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    margin: 0 !important;
+  }
+  .pdf-toolbar,
+  .pdf-info-bar { display: none !important; }
+
+  .epl-doc {
+    width: 190mm !important;
+    height: 277mm !important;
+    max-height: 277mm !important;
+    overflow: hidden !important;
+    border: 2px solid #000 !important;
+    background: white !important;
+    display: flex !important;
+    flex-direction: column !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .epl-header-table {
+    flex-shrink: 0 !important;
+    width: 100% !important;
+  }
+
+  .epl-content {
+    flex: 1 !important;
+    min-height: 0 !important;
+  }
+
+  .epl-img-cell,
+  .epl-text-cell {
+    overflow: hidden !important;
   }
 
   * {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 }
