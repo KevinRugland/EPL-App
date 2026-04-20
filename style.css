@@ -362,8 +362,8 @@ select {
 }
 
 .epl-img-cell {
-  border-bottom: 1px solid #000;
-  border-right: 1px solid #000;
+  border-bottom: 1px solid rgba(0,0,0,0.4);
+  border-right: none;
   border-left: none;
   display: flex;
   align-items: center;
@@ -373,7 +373,7 @@ select {
 }
 
 .epl-text-cell {
-  border-bottom: 1px solid #000;
+  border-bottom: 1px solid rgba(0,0,0,0.4);
   display: flex;
   align-items: center;
   padding: 10px 14px;
