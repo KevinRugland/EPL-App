@@ -10,9 +10,9 @@
   --bg:     #efefec;
   --font:   -apple-system, 'Helvetica Neue', Arial, sans-serif;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html { font-size: 16px; }
-body { background: var(--bg); font-family: var(--font); color: var(--dark); min-height: 100vh; padding-bottom: 80px; -webkit-text-size-adjust: 100%; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { font-size: 16px; scrollbar-gutter: stable; overflow-y: scroll; }
+body { background: var(--bg); font-family: var(--font); color: var(--dark); min-height: 100vh; padding-bottom: 80px; -webkit-text-size-adjust: 100%; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
 /* ════════════════════════════════════════
    TOPBAR OG PROGRESS
@@ -197,39 +197,215 @@ select {
 .pdf-info-bar { background: #1a5fb4; color: white; padding: 8px 14px; font-size: 12px; font-weight: 600; flex-shrink: 0; text-align: center; line-height: 1.4; }
 
 /* ════════════════════════════════════════
-   EPL-DOKUMENT — clean slate (v1.0.10+)
+   EPL DOCUMENT
 ════════════════════════════════════════ */
 .epl-doc {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 11px;
-  color: #000;
-  background: white;
   width: 190mm;
-  height: 210mm;
+  height: 277mm;
+  max-height: 277mm;
+  overflow: hidden;
   border: 2px solid #000;
+  background: white;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-/* ════════════════════════════════════════
-   EPL HEADER — ny klasse-basert struktur
-════════════════════════════════════════ */
-.epl-header { width: 100%; }
-.epl-header-table { width: 100%; border-collapse: collapse; border: 2px solid #000; table-layout: fixed; }
-.epl-header-table td { border: 1px solid #ccc; padding: 3px 6px; vertical-align: top; font-size: 10px; }
-.epl-title-cell  { border: none; border-right: 1px solid #000; padding: 6px 10px; vertical-align: middle; }
-.epl-eplnr-cell  { border: none; border-right: 2px solid #000; padding: 4px 8px; vertical-align: middle; width: 160px; }
-.epl-logo-cell   { border: none; padding: 4px 8px; vertical-align: middle; text-align: center; width: 140px; }
-.epl-tr-header td { border-bottom: 2px solid #000; }
+/* --- HEADER TABLE --- */
+.epl-header-table {
+  width: 100%;
+  border-collapse: collapse;
+  flex-shrink: 0;
+  table-layout: fixed;
+}
 
-.epl-main-title { font-size: 20px; font-weight: 900; font-family: Arial Black, Arial, sans-serif; }
-.epl-logo       { width: 130px; height: auto; display: block; }
-.epl-epl-nr     { font-size: 13px; font-weight: 700; }
+.epl-header-table td {
+  border: 1px solid #000;
+  vertical-align: top;
+  padding: 4px 6px;
+  font-size: 9pt;
+}
 
-.cell-label { font-size: 8px; color: #777; margin-bottom: 1px; }
-.cell-val   { font-weight: 600; font-size: 10px; }
+/* Remove duplicate borders with outer .epl-doc border */
+.epl-header-table tr:first-child td {
+  border-top: none;
+}
+.epl-header-table td:first-child {
+  border-left: none;
+}
+.epl-header-table td:last-child {
+  border-right: none;
+}
 
-.epl-editable { min-width: 40px; outline: none; border-bottom: 1px dashed #aaa; cursor: text; display: inline-block; font-size: 9px; }
-.epl-editable:empty::before { content: attr(data-placeholder); color: #bbb; font-style: italic; }
+/* Rad 1 column widths */
+.epl-title-cell {
+  width: 55%;
+  font-size: 20pt;
+  font-weight: bold;
+  vertical-align: middle;
+  padding: 6px 8px;
+  border-bottom: 1px solid #000;
+}
+
+.epl-eplnr-cell {
+  width: 20%;
+  border-bottom: 1px solid #000;
+}
+
+.epl-logo-cell {
+  width: 25%;
+  text-align: right;
+  vertical-align: middle;
+  padding: 4px 6px;
+  border-left: 1px solid #000;
+  border-bottom: none;
+}
+
+.epl-logo {
+  max-width: 100%;
+  max-height: 45px;
+  object-fit: contain;
+}
+
+/* Rad 2 */
+.epl-tittel-maskin-cell {
+  width: 55%;
+  padding: 0;
+}
+
+.epl-revisjon-cell {
+  width: 10%;
+}
+
+.epl-laget-revidert-cell {
+  width: 25%;
+  padding: 0;
+}
+
+/* Rad 3 */
+.epl-beskrivelse-cell {
+  width: 55%;
+  min-height: 36px;
+}
+
+.epl-dato-sign-cell {
+  width: 35%;
+  padding: 0;
+}
+
+/* Field groups (side-by-side fields within a cell) */
+.epl-field-group {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.epl-field {
+  flex: 1;
+  padding: 4px 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.epl-field-border-left {
+  border-left: 1px solid #000;
+}
+
+/* Dato/Sign 2×2 grid */
+.epl-dato-sign-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  height: 100%;
+}
+
+.epl-ds-item {
+  padding: 4px 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.epl-ds-border-top {
+  border-top: 1px solid #000;
+}
+
+/* Labels and values */
+.cell-label {
+  font-size: 7pt;
+  color: #333;
+  display: block;
+  line-height: 1.2;
+}
+
+.cell-val {
+  font-size: 9pt;
+  font-weight: 600;
+  display: block;
+}
+
+.epl-editable {
+  font-style: italic;
+  color: #888;
+  font-weight: normal;
+  border-bottom: 1px dashed #aaa;
+  min-height: 14px;
+}
+
+/* --- CONTENT SECTION --- */
+.epl-content {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  min-height: 0;
+  border-top: 1px solid #000;
+}
+
+.epl-img-cell {
+  border-bottom: 1px solid #000;
+  border-right: 1px solid #000;
+  border-left: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  overflow: hidden;
+}
+
+.epl-text-cell {
+  border-bottom: 1px solid #000;
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  font-size: 10pt;
+  line-height: 1.5;
+  overflow: hidden;
+}
+
+.epl-img-cell.epl-last-row,
+.epl-text-cell.epl-last-row {
+  border-bottom: none;
+}
+
+.epl-bilde {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.epl-ingen-bilde {
+  color: #aaa;
+  font-size: 9pt;
+}
+
+/* Optional tillegg cell */
+.epl-tillegg-cell {
+  grid-column: 1 / -1;
+  border-top: 1px solid #000;
+  text-align: center;
+  padding: 8px 14px;
+  font-size: 9pt;
+}
 
 /* ════════════════════════════════════════
    PRINT — A4 stående
@@ -237,19 +413,10 @@ select {
 @media print {
   @page {
     size: A4 portrait;
-    margin: 0 auto;
+    margin: 10mm;
   }
 
-  html {
-    background: white !important;
-  }
   html, body {
-    width: auto;
-    height: 277mm;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-  body {
     background: white !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -263,81 +430,46 @@ select {
     left: auto !important;
     top: auto !important;
     width: 100% !important;
+    background: transparent !important;
+    padding: 0 !important;
     height: auto !important;
     min-height: 0 !important;
-    background: transparent !important;
-    overflow: hidden !important;
-    padding: 0 !important;
+    overflow: visible !important;
     margin: 0 !important;
   }
   .pdf-toolbar,
   .pdf-info-bar { display: none !important; }
 
-  /* EPL document — single page, border only */
   .epl-doc {
     width: 190mm !important;
-    height: 210mm !important;
+    height: 277mm !important;
+    max-height: 277mm !important;
+    overflow: hidden !important;
     border: 2px solid #000 !important;
     background: white !important;
-    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
     page-break-inside: avoid !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-
-  /* Header */
-  .epl-header {
-    width: 100% !important;
+    break-inside: avoid !important;
   }
 
   .epl-header-table {
+    flex-shrink: 0 !important;
     width: 100% !important;
-    border-collapse: collapse !important;
-    border: 2px solid #000 !important;
-    table-layout: fixed !important;
   }
 
-  .epl-header-table td {
-    border: 1px solid #ccc !important;
+  .epl-content {
+    flex: 1 !important;
+    min-height: 0 !important;
+  }
+
+  .epl-img-cell,
+  .epl-text-cell {
+    overflow: hidden !important;
+  }
+
+  * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
-
-  .epl-title-cell {
-    border: none !important;
-    border-right: 1px solid #000 !important;
-    padding: 6px 10px !important;
-    vertical-align: middle !important;
-  }
-
-  .epl-eplnr-cell {
-    border: none !important;
-    border-right: 2px solid #000 !important;
-    padding: 4px 8px !important;
-    vertical-align: middle !important;
-  }
-
-  .epl-logo-cell {
-    border: none !important;
-    padding: 4px 8px !important;
-    vertical-align: middle !important;
-    text-align: center !important;
-  }
-
-  .epl-logo {
-    width: 130px !important;
-    height: auto !important;
-    display: block !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-
-  .epl-tr-header td {
-    border-bottom: 2px solid #000 !important;
-  }
-
-  /* Hide UI controls */
-  .epl-img-controls,
-  .img-rotate-btn,
-  .topbar-version { display: none !important; }
 }
