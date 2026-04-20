@@ -213,6 +213,14 @@ select {
 }
 
 /* --- HEADER TABLE --- */
+
+/* Column widths */
+.epl-col-1 { width: 35%; }
+.epl-col-2 { width: 20%; }
+.epl-col-3 { width: 10%; }
+.epl-col-4 { width: 15%; }
+.epl-col-5 { width: 20%; }
+
 .epl-header-table {
   width: 100%;
   border-collapse: collapse;
@@ -225,101 +233,52 @@ select {
   vertical-align: top;
   padding: 4px 6px;
   font-size: 9pt;
+  box-sizing: border-box;
 }
 
-/* Remove duplicate borders with outer .epl-doc border */
-.epl-header-table tr:first-child td {
-  border-top: none;
-}
-.epl-header-table td:first-child {
-  border-left: none;
-}
-.epl-header-table td:last-child {
-  border-right: none;
-}
+/* Remove outer duplicate borders */
+.epl-header-table tr:first-child td { border-top: none; }
+.epl-header-table td:first-child { border-left: none; }
+.epl-header-table td:last-child { border-right: none; }
 
-/* Rad 1 column widths */
+/* RAD 1 */
 .epl-title-cell {
-  width: 55%;
   font-size: 20pt;
   font-weight: bold;
   vertical-align: middle;
   padding: 6px 8px;
-  border-bottom: 1px solid #000;
 }
 
-.epl-eplnr-cell {
-  width: 20%;
-  border-bottom: 1px solid #000;
-}
+.epl-eplnr-cell { vertical-align: top; }
 
-.epl-logo-cell {
-  width: 25%;
-  text-align: center;
-  vertical-align: middle;
-  padding: 4px 6px;
-  border-left: 1px solid #000;
-  border-bottom: none;
+.epl-laget-revidert-cell { vertical-align: top; }
+
+.epl-lr-line {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  margin-bottom: 2px;
 }
 
-.epl-logo {
-  max-width: 100%;
-  max-height: 45px;
-  object-fit: contain;
-}
+/* RAD 2 */
+.epl-tittel-cell,
+.epl-maskin-cell { vertical-align: top; }
 
-/* Rad 2 */
-.epl-tittel-maskin-cell {
-  width: 55%;
-  padding: 0;
-}
+.epl-revisjon-cell { vertical-align: top; }
 
-.epl-revisjon-cell {
-  width: 10%;
-}
-
-.epl-laget-revidert-cell {
-  width: 25%;
-  padding: 0;
-}
-
-/* Rad 3 */
+/* RAD 3 */
 .epl-beskrivelse-cell {
-  width: 55%;
-  min-height: 36px;
+  vertical-align: top;
+  min-height: 32px;
 }
 
 .epl-dato-sign-cell {
-  width: 35%;
   padding: 0;
+  vertical-align: top;
 }
 
-/* Field groups (side-by-side fields within a cell) */
-.epl-field-group {
-  display: flex;
-  width: 100%;
-  height: 100%;
-}
-
-.epl-field {
-  flex: 1;
-  padding: 4px 6px;
-  display: flex;
-  flex-direction: column;
-}
-
-.epl-field-border-left {
-  border-left: 1px solid #000;
-}
-
-/* Dato/Sign 2×2 grid */
 .epl-dato-sign-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  width: 100%;
   height: 100%;
 }
 
@@ -329,8 +288,30 @@ select {
   flex-direction: column;
 }
 
-.epl-ds-border-top {
-  border-top: 1px solid #000;
+.epl-field-border-left { border-left: 1px solid #000; }
+
+.epl-ds-border-top { border-top: 1px solid #000; }
+
+/* Logo cell */
+.epl-logo-cell {
+  text-align: center;
+  vertical-align: middle;
+  padding: 4px 6px;
+  border-left: 1px solid #000;
+  border-right: none;
+}
+
+.epl-logo-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.epl-logo {
+  max-width: 100%;
+  max-height: 36px;
+  width: auto;
+  object-fit: contain;
 }
 
 /* Labels and values */

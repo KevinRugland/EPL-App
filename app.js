@@ -2,7 +2,7 @@
    KONFIGURASJON — endre her
 ════════════════════════════════════════ */
 const BEDRIFT      = 'Egenes Brannteknikk'; // ← Firmanavn i topbar
-const APP_VERSION  = 'v1.0.16';
+const APP_VERSION  = 'v1.0.17';
 
 /* ════════════════════════════════════════
    TILSTAND
@@ -269,77 +269,79 @@ function genererEPL() {
   document.getElementById('eplDocOutput').innerHTML = `
 <div class="epl-doc">
 
-  <!-- HEADER: flex-shrink: 0 -->
+  <!-- HEADER -->
   <table class="epl-header-table">
-    <!-- RAD 1: Tittel + EPL-nr + Logo -->
-    <tr>
-      <td class="epl-title-cell" rowspan="1">ETTPUNKTSLEKSJON</td>
-      <td class="epl-eplnr-cell">
-        <span class="cell-label">EPL nr.</span>
-        <span class="cell-val epl-editable">${v('eplNr')}</span>
-      </td>
-      <td class="epl-logo-cell" rowspan="3">
-        <img src="Egenes_Brannteknikk.png" class="epl-logo" alt="Egenes Brannteknikk">
-      </td>
-    </tr>
-    <!-- RAD 2: Tittel / Maskin / Revisjon / Laget av / Revidert -->
-    <tr>
-      <td class="epl-tittel-maskin-cell">
-        <div class="epl-field-group">
-          <div class="epl-field">
-            <span class="cell-label">Tittel:</span>
-            <span class="cell-val">${v('tittel')}</span>
-          </div>
-          <div class="epl-field epl-field-border-left">
-            <span class="cell-label">Maskin:</span>
-            <span class="cell-val">${v('maskin')}</span>
-          </div>
-        </div>
-      </td>
-      <td class="epl-revisjon-cell">
-        <span class="cell-label">Revisjon:</span>
-        <span class="cell-val">A</span>
-      </td>
-      <td class="epl-laget-revidert-cell">
-        <div class="epl-field-group">
-          <div class="epl-field">
+    <colgroup>
+      <col class="epl-col-1">
+      <col class="epl-col-2">
+      <col class="epl-col-3">
+      <col class="epl-col-4">
+      <col class="epl-col-5">
+    </colgroup>
+    <tbody>
+      <tr class="epl-header-row-1">
+        <td colspan="2" class="epl-title-cell">ETTPUNKTSLEKSJON</td>
+        <td class="epl-eplnr-cell">
+          <span class="cell-label">EPL nr.</span>
+          <span class="cell-val">${v('eplNr')}</span>
+        </td>
+        <td class="epl-laget-revidert-cell">
+          <div class="epl-lr-line">
             <span class="cell-label">Laget av:</span>
             <span class="cell-val">${v('lagetAv')}</span>
           </div>
-          <div class="epl-field epl-field-border-left">
+          <div class="epl-lr-line">
             <span class="cell-label">Revidert:</span>
             <span class="cell-val epl-editable">${v('godkjentAv')}</span>
           </div>
-        </div>
-      </td>
-    </tr>
-    <!-- RAD 3: Beskrivelse / Dato / Sign -->
-    <tr>
-      <td class="epl-beskrivelse-cell" colspan="1">
-        <span class="cell-label">Beskrivelse:</span>
-        <span class="cell-val">${v('beskrivelse')}</span>
-      </td>
-      <td class="epl-dato-sign-cell">
-        <div class="epl-dato-sign-grid">
-          <div class="epl-ds-item">
-            <span class="cell-label">Dato:</span>
-            <span class="cell-val">${v('datoOpprettet')}</span>
+        </td>
+        <td rowspan="3" class="epl-logo-cell">
+          <div class="epl-logo-wrap">
+            <img src="Egenes_Brannteknikk.png" class="epl-logo" alt="Egenes Brannteknikk">
           </div>
-          <div class="epl-ds-item epl-field-border-left">
-            <span class="cell-label">Dato:</span>
-            <span class="cell-val epl-editable">${v('datoGodkjent')}</span>
+        </td>
+      </tr>
+      <tr class="epl-header-row-2">
+        <td class="epl-tittel-cell">
+          <span class="cell-label">Tittel:</span>
+          <span class="cell-val">${v('tittel')}</span>
+        </td>
+        <td class="epl-maskin-cell">
+          <span class="cell-label">Maskin:</span>
+          <span class="cell-val">${v('maskin')}</span>
+        </td>
+        <td colspan="2" class="epl-revisjon-cell">
+          <span class="cell-label">Revisjon:</span>
+          <span class="cell-val">${v('revisjon') || 'A'}</span>
+        </td>
+      </tr>
+      <tr class="epl-header-row-3">
+        <td colspan="3" class="epl-beskrivelse-cell">
+          <span class="cell-label">Beskrivelse:</span>
+          <span class="cell-val">${v('beskrivelse')}</span>
+        </td>
+        <td class="epl-dato-sign-cell">
+          <div class="epl-dato-sign-grid">
+            <div class="epl-ds-item">
+              <span class="cell-label">Dato:</span>
+              <span class="cell-val">${v('datoOpprettet')}</span>
+            </div>
+            <div class="epl-ds-item epl-field-border-left">
+              <span class="cell-label">Dato:</span>
+              <span class="cell-val epl-editable">${v('datoGodkjent')}</span>
+            </div>
+            <div class="epl-ds-item epl-ds-border-top">
+              <span class="cell-label">Sign.:</span>
+              <span class="cell-val epl-editable">${v('signLaget')}</span>
+            </div>
+            <div class="epl-ds-item epl-field-border-left epl-ds-border-top">
+              <span class="cell-label">Sign.:</span>
+              <span class="cell-val epl-editable">${v('signGodkjent')}</span>
+            </div>
           </div>
-          <div class="epl-ds-item epl-ds-border-top">
-            <span class="cell-label">Sign.:</span>
-            <span class="cell-val epl-editable">${v('signLaget')}</span>
-          </div>
-          <div class="epl-ds-item epl-field-border-left epl-ds-border-top">
-            <span class="cell-label">Sign.:</span>
-            <span class="cell-val epl-editable">${v('signGodkjent')}</span>
-          </div>
-        </div>
-      </td>
-    </tr>
+        </td>
+      </tr>
+    </tbody>
   </table>
 
   <!-- INNHOLD: flex: 1 -->
