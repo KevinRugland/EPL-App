@@ -2,7 +2,7 @@
    KONFIGURASJON — endre her
 ════════════════════════════════════════ */
 const BEDRIFT      = 'Egenes Brannteknikk'; // ← Firmanavn i topbar
-const APP_VERSION  = 'v1.0.28';
+const APP_VERSION  = 'v1.0.29';
 
 /* ════════════════════════════════════════
    TILSTAND
@@ -270,6 +270,7 @@ function rotStyle(n) {
 }
 
 function genererEPL() {
+  const antall = parseInt(document.getElementById('antallBilder').value) || 3;
   const tilleggChecked = document.getElementById('tilleggToggle').checked;
   const tilleggTekstEl = document.getElementById('tilleggTekst');
   const tilleggTekst = tilleggChecked && tilleggTekstEl ? tilleggTekstEl.value.trim() : '';
@@ -349,13 +350,13 @@ function genererEPL() {
 
   <!-- INNHOLD: flex: 1 -->
   <div class="epl-content${tilleggTekst ? ' has-tillegg' : ''}">
-    ${[0,1,2].map(i => `
-      <div class="epl-img-cell${i === 2 && !tilleggTekst ? ' epl-last-row' : ''}">
+    ${Array.from({length: antall}, (_, i) => `
+      <div class="epl-img-cell${i === antall - 1 && !tilleggTekst ? ' epl-last-row' : ''}">
         ${imgs[i+1]
           ? `<img src="${imgs[i+1]}" class="epl-bilde" alt="Bilde ${i+1}"${rotStyle(i+1) ? ` style="${rotStyle(i+1)}"` : ''}>`
           : `<span class="epl-ingen-bilde">Ingen bilde</span>`}
       </div>
-      <div class="epl-text-cell${i === 2 && !tilleggTekst ? ' epl-last-row' : ''}">
+      <div class="epl-text-cell${i === antall - 1 && !tilleggTekst ? ' epl-last-row' : ''}">
         <span>${imgData['cap' + (i+1)] || ''}</span>
       </div>
     `).join('')}
@@ -365,6 +366,9 @@ function genererEPL() {
   </div>
 
 </div>`;
+
+  const grid = document.querySelector('#eplDocOutput .epl-content');
+  if (grid) grid.style.gridTemplateRows = `repeat(${antall}, 1fr)`;
 }
 
 /* ════════════════════════════════════════
