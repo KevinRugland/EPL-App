@@ -215,17 +215,19 @@ select {
 /* --- HEADER TABLE --- */
 
 /* Column widths */
-.epl-col-1 { width: 35%; }
-.epl-col-2 { width: 20%; }
-.epl-col-3 { width: 10%; }
+.epl-col-1 { width: 22%; }
+.epl-col-2 { width: 16%; }
+.epl-col-3 { width: 12%; }
 .epl-col-4 { width: 15%; }
-.epl-col-5 { width: 20%; }
+.epl-col-5 { width: 15%; }
+.epl-col-6 { width: 20%; }
 
 .epl-header-table {
   width: 100%;
   border-collapse: collapse;
   flex-shrink: 0;
   table-layout: fixed;
+  height: 48mm;
 }
 
 .epl-header-table td {
@@ -240,6 +242,12 @@ select {
 .epl-header-table tr:first-child td { border-top: none; }
 .epl-header-table td:first-child { border-left: none; }
 .epl-header-table td:last-child { border-right: none; }
+
+/* Row heights */
+.epl-header-row-1 { height: 17mm; }
+.epl-header-row-2 { height: 10mm; }
+.epl-header-row-3 { height: 11mm; }
+.epl-header-row-4 { height: 10mm; }
 
 /* RAD 1 */
 .epl-title-cell {
@@ -309,7 +317,7 @@ select {
 
 .epl-logo {
   max-width: 100%;
-  max-height: 36px;
+  max-height: 44mm;
   width: auto;
   object-fit: contain;
 }
