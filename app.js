@@ -1,14 +1,14 @@
 /* ════════════════════════════════════════
    KONFIGURASJON — endre her
 ════════════════════════════════════════ */
-const BEDRIFT = 'Egenes Brannteknikk'; // ← Firmanavn i topbar
+const BEDRIFT      = 'Egenes Brannteknikk'; // ← Firmanavn i topbar
+const APP_VERSION  = 'v1.0.25';
 
 /* ════════════════════════════════════════
    TILSTAND
 ════════════════════════════════════════ */
 let curStep = 1;
 const TOTAL  = 4;
-let layout   = 'grid';
 const imgs   = {};
 const imgData = {};
 
@@ -16,6 +16,7 @@ const imgData = {};
    INITIALISERING
 ════════════════════════════════════════ */
 document.getElementById('topbarBrand').textContent = BEDRIFT;
+document.getElementById('topbarVersion').textContent = APP_VERSION;
 document.getElementById('datoOpprettet').valueAsDate = new Date();
 
 // Knytt alle knapper til funksjoner her — ingen onclick i HTML
@@ -30,15 +31,6 @@ document.getElementById('btnTilbakeEndringer').addEventListener('click', functio
 document.getElementById('btnPrint').addEventListener('click', doPrint);
 document.getElementById('btnLukkPDF').addEventListener('click', hidePDF);
 document.getElementById('btnSendEpost').addEventListener('click', oppdaterEpostlenke);
-
-// Layout-velger
-document.querySelectorAll('.layout-opt').forEach(function(el) {
-  el.addEventListener('click', function() {
-    layout = this.dataset.layout;
-    document.querySelectorAll('.layout-opt').forEach(function(o) { o.classList.remove('selected'); });
-    this.classList.add('selected');
-  });
-});
 
 /* ════════════════════════════════════════
    HJELPEFUNKSJONER
@@ -79,7 +71,6 @@ function updateUI() {
 }
 
 function goNext() {
-  if (curStep === 1 && !validateSteg1()) return;
   if (curStep === 2) byggBildeblokker();
   if (curStep === 3) byggOppsummering();
   if (curStep === TOTAL) {
@@ -95,27 +86,6 @@ function goNext() {
 function goBack() {
   curStep--;
   updateUI();
-}
-
-/* ════════════════════════════════════════
-   VALIDERING
-════════════════════════════════════════ */
-function validateSteg1() {
-  const pakrevde = ['tittel', 'lagetAv', 'datoOpprettet'];
-  for (let i = 0; i < pakrevde.length; i++) {
-    const el = document.getElementById(pakrevde[i]);
-    if (!el || !el.value.trim()) {
-      if (el) {
-        el.focus();
-        el.style.borderColor = '#cc1515';
-        el.style.boxShadow = '0 0 0 3px rgba(204,21,21,0.15)';
-        setTimeout(function() { el.style.borderColor = ''; el.style.boxShadow = ''; }, 2500);
-      }
-      showToast('⚠️ Fyll ut alle påkrevde felt');
-      return false;
-    }
-  }
-  return true;
 }
 
 /* ════════════════════════════════════════
@@ -136,16 +106,16 @@ function byggBildeblokker() {
         <span class="img-opt">Valgfritt</span>
       </div>
       <div class="hint-text" style="margin:10px 12px 0;">
-        📱 Tips: Ta bildet i <strong>stående (portrett)</strong> orientasjon for best resultat i dokumentet.
+        Tips: Ta bildet i <strong>stående (portrett)</strong> orientasjon for best resultat i dokumentet.
       </div>
       <div class="upload-zone" id="zone${i}">
         <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-          <label style="flex:1;min-width:120px;max-width:180px;cursor:pointer;background:var(--red);color:white;border-radius:4px;padding:12px 8px;text-align:center;font-weight:700;font-size:14px;">
-            📷 Ta bilde
+          <label class="btn btn-primary" style="max-width:180px;">
+            Ta bilde
             <input type="file" accept="image/*" capture="environment" data-steg="${i}" style="display:none;">
           </label>
-          <label style="flex:1;min-width:120px;max-width:180px;cursor:pointer;background:#1a1a1a;color:white;border-radius:4px;padding:12px 8px;text-align:center;font-weight:700;font-size:14px;">
-            🖼️ Velg fra galleri
+          <label class="btn btn-dark" style="max-width:180px;">
+            Velg fra galleri
             <input type="file" accept="image/*" data-steg="${i}" style="display:none;">
           </label>
         </div>
@@ -191,12 +161,12 @@ function fjernBilde(n) {
   zone.style.cssText = '';
   zone.innerHTML = `
     <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-      <label style="flex:1;min-width:120px;max-width:180px;cursor:pointer;background:var(--red);color:white;border-radius:4px;padding:12px 8px;text-align:center;font-weight:700;font-size:14px;">
-        📷 Ta bilde
+      <label class="btn btn-primary" style="max-width:180px;">
+        Ta bilde
         <input type="file" accept="image/*" capture="environment" data-steg="${n}" style="display:none;">
       </label>
-      <label style="flex:1;min-width:120px;max-width:180px;cursor:pointer;background:#1a1a1a;color:white;border-radius:4px;padding:12px 8px;text-align:center;font-weight:700;font-size:14px;">
-        🖼️ Velg fra galleri
+      <label class="btn btn-dark" style="max-width:180px;">
+        Velg fra galleri
         <input type="file" accept="image/*" data-steg="${n}" style="display:none;">
       </label>
     </div>`;
@@ -264,89 +234,94 @@ function byggOppsummering() {
    EPL-DOKUMENT
 ════════════════════════════════════════ */
 function genererEPL() {
-  const n    = parseInt(v('antallBilder')) || 3;
-  const noImg = '<div class="no-img-box">Ingen bilde</div>';
-
-  // Bygg innhold: alltid bilde venstre, tekst høyre
-  const innhold = `<div class="epl-layout-side imgs-${n}">${
-    Array.from({length: n}, function(_, idx) {
-      const i = idx + 1;
-      return `<div class="epl-side-row">
-        ${imgs[i] ? `<img src="${imgs[i]}" alt="Steg ${i}">` : noImg}
-        <div class="epl-side-text">${imgData['cap'+i] || ''}</div>
-      </div>`;
-    }).join('')
-  }</div>`;
-
   document.getElementById('eplDocOutput').innerHTML = `
-  <div class="epl-doc">
-    <table class="epl-table">
-      <tbody>
-        <!-- RAD 1: Tittel + EPL-nr + Logo -->
-        <tr class="epl-tr-header">
-          <td class="epl-td-title" colspan="2">
-            <span class="epl-main-title">ETTPUNKTSLEKSJON</span>
-          </td>
-          <td class="epl-td-eplnr">
-            <div class="cell-label">EPL nr.</div>
-            <div class="epl-epl-nr">${v('eplNr') || ''}</div>
-          </td>
-          <td class="epl-td-logo" rowspan="4">
-            <img class="epl-logo" src="Egenes_Brannteknikk.png" alt="Egenes Brannteknikk">
-          </td>
-        </tr>
+<div class="epl-doc">
 
-        <!-- RAD 2: Tittel + Maskin + Laget av / Godkjent av -->
-        <tr>
-          <td style="width:40%;">
-            <div class="cell-label">Tittel:</div>
-            <div class="cell-val">${v('tittel')}</div>
-          </td>
-          <td style="width:20%;">
-            <div class="cell-label">Maskin:</div>
-            <div class="cell-val">${v('maskin')}</div>
-          </td>
-          <td>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
-              <div><div class="cell-label">Laget av:</div><div class="cell-val">${v('lagetAv')}</div></div>
-              <div><div class="cell-label">Godkjent av:</div><div class="epl-editable cell-val" contenteditable="true" data-placeholder="Skriv her...">${v('godkjentAv')}</div></div>
-            </div>
-          </td>
-        </tr>
+  <!-- HEADER -->
+  <table class="epl-header-table">
+    <colgroup>
+      <col class="epl-col-1">
+      <col class="epl-col-2">
+      <col class="epl-col-3">
+      <col class="epl-col-4">
+      <col class="epl-col-5">
+      <col class="epl-col-6">
+    </colgroup>
+    <tbody>
+      <tr class="epl-header-row-1">
+        <td colspan="3" class="epl-title-cell">ETTPUNKTSLEKSJON</td>
+        <td colspan="2" class="epl-eplnr-cell">
+          <span class="cell-label">EPL.nr</span>
+          <span class="cell-val">${v('eplNr')}</span>
+        </td>
+        <td rowspan="4" class="epl-logo-cell">
+          <img src="Egenes_Brannteknikk.png" alt="Logo" class="epl-logo">
+        </td>
+      </tr>
+      <tr class="epl-header-row-2">
+        <td class="epl-tittel-cell">
+          <span class="cell-label">Tittel:</span>
+          <span class="cell-val">${v('tittel')}</span>
+        </td>
+        <td class="epl-maskin-cell">
+          <span class="cell-label">Maskin:</span>
+          <span class="cell-val">${v('maskin')}</span>
+        </td>
+        <td class="epl-revisjon-cell">
+          <span class="cell-label">Revisjon:</span>
+          <span class="cell-val">${v('revisjon') || 'A'}</span>
+        </td>
+        <td class="epl-laget-cell">
+          <span class="cell-label">Laget av:</span>
+          <span class="cell-val">${v('lagetAv')}</span>
+        </td>
+        <td class="epl-godkjent-cell">
+          <span class="cell-label">Godkjent av:</span>
+          <span class="cell-val epl-editable">${v('godkjentAv')}</span>
+        </td>
+      </tr>
+      <tr class="epl-header-row-3">
+        <td colspan="3" rowspan="2" class="epl-beskrivelse-cell">
+          <span class="cell-label">Beskrivelse:</span>
+          <span class="cell-val">${v('beskrivelse')}</span>
+        </td>
+        <td class="epl-dato-cell">
+          <span class="cell-label">dato</span>
+          <span class="cell-val">${v('datoOpprettet')}</span>
+        </td>
+        <td class="epl-dato-cell">
+          <span class="cell-label">dato</span>
+          <span class="cell-val epl-editable">${v('datoGodkjent')}</span>
+        </td>
+      </tr>
+      <tr class="epl-header-row-4">
+        <td class="epl-sign-cell">
+          <span class="cell-label">sign</span>
+          <span class="cell-val">${v('signLaget')}</span>
+        </td>
+        <td class="epl-sign-cell">
+          <span class="cell-label">sign</span>
+          <span class="cell-val epl-editable">${v('signGodkjent')}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-        <!-- RAD 3: Beskrivelse + Dato -->
-        <tr>
-          <td colspan="2" rowspan="2" style="vertical-align:top; min-height:30px;">
-            <div class="cell-label">Beskrivelse:</div>
-            <div class="cell-val">${v('beskrivelse')}</div>
-          </td>
-          <td>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
-              <div><div class="cell-label">Dato:</div><div class="cell-val">${v('datoOpprettet')}</div></div>
-              <div><div class="cell-label">Dato:</div><div class="epl-editable cell-val" contenteditable="true" data-placeholder="Skriv her...">${v('datoGodkjent')}</div></div>
-            </div>
-          </td>
-        </tr>
+  <!-- INNHOLD: flex: 1 -->
+  <div class="epl-content">
+    ${[0,1,2].map(i => `
+      <div class="epl-img-cell${i === 2 ? ' epl-last-row' : ''}">
+        ${imgs[i+1]
+          ? `<img src="${imgs[i+1]}" class="epl-bilde" alt="Bilde ${i+1}">`
+          : `<span class="epl-ingen-bilde">Ingen bilde</span>`}
+      </div>
+      <div class="epl-text-cell${i === 2 ? ' epl-last-row' : ''}">
+        <span>${imgData['cap' + (i+1)] || ''}</span>
+      </div>
+    `).join('')}
+  </div>
 
-        <!-- RAD 4: Sign -->
-        <tr>
-          <td>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
-              <div><div class="cell-label">Sign.:</div><div class="cell-val">${v('signLaget')}</div></div>
-              <div><div class="cell-label">Sign.:</div><div class="epl-editable cell-val" contenteditable="true" data-placeholder="Skriv her...">${v('signGodkjent')}</div></div>
-            </div>
-          </td>
-        </tr>
-
-        <!-- INNHOLD -->
-        <tr>
-          <td colspan="4" class="epl-td-content">
-            ${innhold}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>`;
+</div>`;
 }
 
 /* ════════════════════════════════════════
@@ -399,7 +374,7 @@ function doPrint() {
   if (isIOS && isPWA) {
     // PWA på iOS — window.print() fungerer ikke, vis tydelig instruksjon
     document.getElementById('pdfInfoBar').textContent =
-      '📌 For å lagre PDF: Trykk "Lukk", åpne siden i Safari via denne lenken og bruk Del-knappen (□↑) → "Skriv ut"';
+      'NB: For å lagre PDF: Trykk "Lukk", åpne siden i Safari og bruk Del-knappen (□↑) → "Skriv ut"';
     document.getElementById('pdfInfoBar').style.background = '#cc1515';
   } else if (isIOS) {
     // Safari på iOS — prøv print, vis instruksjon som backup
@@ -407,7 +382,7 @@ function doPrint() {
       window.print();
     } catch(e) {}
     document.getElementById('pdfInfoBar').textContent =
-      '📌 Hvis utskrift ikke åpnet: Trykk Del-knappen (□↑) → "Skriv ut" → klyp ut på forhåndsvisning';
+      'NB: Hvis utskrift ikke åpnet: Trykk Del-knappen (□↑) → "Skriv ut" → klyp ut på forhåndsvisning';
   } else {
     window.print();
   }
@@ -430,9 +405,6 @@ function resetAll() {
   document.getElementById('datoOpprettet').valueAsDate = new Date();
   document.getElementById('antallBilder').value = '3';
   for (let i = 1; i <= 3; i++) { imgs[i] = null; imgData['cap'+i] = ''; }
-  layout = 'grid';
-  document.querySelectorAll('.layout-opt').forEach(function(o) { o.classList.remove('selected'); });
-  document.querySelector('[data-layout="grid"]').classList.add('selected');
   document.getElementById('imgBlocks').innerHTML = '';
   updateUI();
 }
@@ -446,6 +418,7 @@ updateUI();
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('sw.js').then(function(reg) {
+      reg.update();
       console.log('Service worker registrert:', reg.scope);
     }).catch(function(err) {
       console.log('Service worker feilet:', err);

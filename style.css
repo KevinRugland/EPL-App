@@ -10,18 +10,19 @@
   --bg:     #efefec;
   --font:   -apple-system, 'Helvetica Neue', Arial, sans-serif;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html { font-size: 16px; }
-body { background: var(--bg); font-family: var(--font); color: var(--dark); min-height: 100vh; padding-bottom: 80px; -webkit-text-size-adjust: 100%; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { font-size: 16px; scrollbar-gutter: stable; overflow-y: scroll; }
+body { background: var(--bg); font-family: var(--font); color: var(--dark); min-height: 100vh; padding-bottom: 80px; -webkit-text-size-adjust: 100%; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
 /* ════════════════════════════════════════
    TOPBAR OG PROGRESS
 ════════════════════════════════════════ */
 .topbar { background: var(--dark); color: white; height: 52px; padding: 0 16px; display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 200; }
-.topbar-brand { font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red); white-space: nowrap; }
-.topbar-sep   { width: 1px; height: 20px; background: #444; flex-shrink: 0; }
-.topbar-title { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.topbar-step  { margin-left: auto; font-size: 11px; color: #888; white-space: nowrap; flex-shrink: 0; }
+.topbar-left    { display: flex; flex-direction: column; align-items: flex-start; }
+.topbar-brand   { font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red); white-space: nowrap; }
+.topbar-subtitle { font-size: 11px; color: #555; font-weight: normal; text-transform: none; letter-spacing: normal; white-space: nowrap; }
+.topbar-step    { font-size: 11px; color: #888; white-space: nowrap; flex-shrink: 0; }
+.topbar-version { font-size: 10px; color: #555; white-space: nowrap; flex-shrink: 0; margin-right: 6px; }
 
 .progress      { height: 3px; background: #2a2a2a; }
 .progress-fill { height: 100%; background: var(--red); transition: width 0.35s ease; width: 0%; }
@@ -50,7 +51,6 @@ body { background: var(--bg); font-family: var(--font); color: var(--dark); min-
 ════════════════════════════════════════ */
 .field       { margin-bottom: 14px; }
 .field label { display: block; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); margin-bottom: 5px; }
-.req         { color: var(--red); }
 
 .hint-text {
   font-size: 11px; color: var(--mid); margin-top: 5px;
@@ -108,17 +108,6 @@ select {
 .img-caption textarea { min-height: 70px; font-size: 15px; }
 
 /* ════════════════════════════════════════
-   LAYOUT-VELGER
-════════════════════════════════════════ */
-.layout-picker { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px; }
-.layout-opt { border: 2px solid var(--border); border-radius: 6px; padding: 12px 8px; text-align: center; cursor: pointer; transition: all 0.15s; background: white; }
-.layout-opt:active  { border-color: var(--red); }
-.layout-opt.selected { border-color: var(--red); background: #fff5f5; }
-.lo-icon { font-size: 24px; margin-bottom: 5px; }
-.lo-lbl  { font-size: 12px; font-weight: 700; color: var(--dark); }
-.lo-sub  { font-size: 10px; color: var(--mid); margin-top: 3px; line-height: 1.3; }
-
-/* ════════════════════════════════════════
    OPPSUMMERING
 ════════════════════════════════════════ */
 .summary-table { width: 100%; border-collapse: collapse; background: white; border: 1.5px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 16px; }
@@ -153,8 +142,9 @@ select {
 }
 .btn:active   { opacity: 0.8; }
 .btn-primary  { background: var(--red); border-color: var(--red); color: white; }
+.btn-dark     { background: var(--dark); border-color: var(--dark); color: white; }
 .btn-back     { flex: 0 0 80px; font-size: 13px; }
-.btn-blue     { background: #1a5fb4; border-color: #1a5fb4; color: white; font-size: 14px; }
+.btn-blue     { background: #1a5fb4; border-color: #1a5fb4; color: white; }
 .btn-full     { width: 100%; }
 .btn:disabled { opacity: 0.35; pointer-events: none; }
 
@@ -184,8 +174,8 @@ select {
 ════════════════════════════════════════ */
 #pdfScreen {
   display: none; position: fixed; inset: 0; z-index: 9999;
-  background: #333; flex-direction: column;
-  -webkit-overflow-scrolling: touch;
+  background: #e8e8e8; flex-direction: column;
+  overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 20px;
 }
 #pdfScreen.visible { display: flex; }
 
@@ -194,130 +184,272 @@ select {
 
 .pdf-info-bar { background: #1a5fb4; color: white; padding: 8px 14px; font-size: 12px; font-weight: 600; flex-shrink: 0; text-align: center; line-height: 1.4; }
 
-.pdf-scroll-area { flex: 1; overflow-y: auto; padding: 16px; -webkit-overflow-scrolling: touch; }
-
 /* ════════════════════════════════════════
-   EPL-DOKUMENT — tabell-basert
+   EPL DOCUMENT
 ════════════════════════════════════════ */
-.epl-doc { font-family: Arial, Helvetica, sans-serif; font-size: 11px; color: #000; background: white; width: 100%; display: flex; flex-direction: column; }
-
-/* Hoved-tabell */
-.epl-table { width: 100%; border-collapse: collapse; border: 2px solid #000; table-layout: fixed; }
-.epl-table td { border: 1px solid #ccc; padding: 3px 6px; vertical-align: top; font-size: 10px; }
-.epl-table td.epl-td-title { border: none; border-right: 1px solid #000; padding: 6px 10px; vertical-align: middle; width: auto; }
-.epl-table td.epl-td-eplnr { border: none; border-right: 2px solid #000; padding: 4px 8px; vertical-align: middle; width: 160px; }
-.epl-table td.epl-td-logo  { border: none; border-left: none; padding: 4px 8px; vertical-align: middle; text-align: center; width: 140px; }
-.epl-table td.epl-td-content { border: none; border-top: 2px solid #000; padding: 8px; }
-.epl-table tr.epl-tr-header td { border-bottom: 2px solid #000; }
-
-.epl-main-title { font-size: 20px; font-weight: 900; font-family: Arial Black, Arial, sans-serif; }
-.epl-logo       { width: 130px; height: auto; display: block; }
-.epl-epl-nr     { font-size: 13px; font-weight: 700; }
-
-.cell-label { font-size: 8px; color: #777; margin-bottom: 1px; }
-.cell-val   { font-weight: 600; font-size: 10px; }
-
-.epl-editable { min-width: 40px; outline: none; border-bottom: 1px dashed #aaa; cursor: text; display: inline-block; font-size: 9px; }
-.epl-editable:empty::before { content: attr(data-placeholder); color: #bbb; font-style: italic; }
-
-.epl-content { padding: 8px; flex: 1; }
-
-/* Gjør den interne vertikale grensen mot logo-kolonnen lik ytre ramme */
-.epl-table tbody tr:not(.epl-tr-header):not(:last-child) td:last-child {
-  border-right: 2px solid #000;
+.epl-doc {
+  width: 190mm;
+  height: 277mm;
+  max-height: 277mm;
+  overflow: hidden;
+  border: 2px solid #000;
+  background: white;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-/* ════════════════════════════════════════
-   EPL LAYOUT — bilde venstre, tekst høyre
-════════════════════════════════════════ */
-.epl-layout-side { display: flex; flex-direction: column; gap: 10px; }
+/* --- HEADER TABLE --- */
 
-.epl-side-row {
+/* Column widths */
+.epl-col-1 { width: 22%; }
+.epl-col-2 { width: 16%; }
+.epl-col-3 { width: 12%; }
+.epl-col-4 { width: 15%; }
+.epl-col-5 { width: 15%; }
+.epl-col-6 { width: 20%; }
+
+.epl-header-table {
+  width: 100%;
+  border-collapse: collapse;
+  flex-shrink: 0;
+  table-layout: fixed;
+  height: 48mm;
+}
+
+.epl-header-table td {
+  border: 1px solid #000;
+  vertical-align: top;
+  padding: 4px 6px;
+  font-size: 9pt;
+  box-sizing: border-box;
+}
+
+/* Remove outer duplicate borders */
+.epl-header-table tr:first-child td { border-top: none; }
+.epl-header-table td:first-child { border-left: none; }
+.epl-header-table td:last-child { border-right: none; }
+
+/* Row heights */
+.epl-header-row-1 { height: 17mm; }
+.epl-header-row-2 { height: 10mm; }
+.epl-header-row-3 { height: 11mm; }
+.epl-header-row-4 { height: 10mm; }
+
+/* RAD 1 */
+.epl-title-cell {
+  font-size: 20pt;
+  font-weight: bold;
+  vertical-align: middle;
+  padding: 6px 8px;
+}
+
+.epl-eplnr-cell { vertical-align: top; }
+
+.epl-laget-revidert-cell { vertical-align: top; }
+
+.epl-lr-line {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2px;
+}
+
+/* RAD 2 */
+.epl-tittel-cell,
+.epl-maskin-cell { vertical-align: top; }
+
+.epl-revisjon-cell { vertical-align: top; }
+
+/* RAD 3 */
+.epl-beskrivelse-cell {
+  vertical-align: top;
+  min-height: 32px;
+}
+
+.epl-dato-sign-cell {
+  padding: 0;
+  vertical-align: top;
+}
+
+.epl-dato-sign-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  height: 100%;
+}
+
+.epl-ds-item {
+  padding: 4px 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.epl-field-border-left { border-left: 1px solid #000; }
+
+.epl-ds-border-top { border-top: 1px solid #000; }
+
+/* Logo cell */
+.epl-logo-cell {
+  text-align: center;
+  vertical-align: middle;
+  padding: 4px 6px;
+  border-left: 1px solid #000;
+  border-right: none;
+}
+
+.epl-logo-wrap {
+  display: flex;
   align-items: center;
+  justify-content: center;
 }
 
-.epl-side-row img {
-  width: 100%;
+.epl-logo {
+  max-width: 100%;
+  max-height: 44mm;
+  width: auto;
   object-fit: contain;
+}
+
+/* Labels and values */
+.cell-label {
+  font-size: 7pt;
+  color: #333;
   display: block;
-  border: 1px solid #ccc;
-  background: #f9f9f9;
+  line-height: 1.2;
 }
 
-.epl-side-row .epl-side-text {
-  font-size: 10px;
-  line-height: 1.6;
-  padding: 4px 8px;
-  align-self: center;
+.cell-val {
+  font-size: 9pt;
+  font-weight: 600;
+  display: block;
 }
 
-/* Bildehøyder skalerer basert på antall bilder */
-.epl-layout-side.imgs-1 .epl-side-row img { max-height: 420px; }
-.epl-layout-side.imgs-2 .epl-side-row img { max-height: 300px; }
-.epl-layout-side.imgs-3 .epl-side-row img { max-height: 200px; }
+.epl-editable {
+  font-style: italic;
+  color: #888;
+  font-weight: normal;
+  border-bottom: 1px dashed #aaa;
+  min-height: 14px;
+}
 
-.no-img-box { height: 120px; background: #eee; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #aaa; }
+/* --- CONTENT SECTION --- */
+.epl-content {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  min-height: 0;
+  border-top: 1px solid #000;
+}
+
+.epl-img-cell {
+  border-bottom: 1px solid rgba(0,0,0,0.4);
+  border-right: none;
+  border-left: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  overflow: hidden;
+}
+
+.epl-text-cell {
+  border-bottom: 1px solid rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  font-size: 10pt;
+  line-height: 1.5;
+  overflow: hidden;
+}
+
+.epl-img-cell.epl-last-row,
+.epl-text-cell.epl-last-row {
+  border-bottom: none;
+}
+
+.epl-bilde {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.epl-ingen-bilde {
+  color: #aaa;
+  font-size: 9pt;
+}
+
+/* Optional tillegg cell */
+.epl-tillegg-cell {
+  grid-column: 1 / -1;
+  border-top: 1px solid #000;
+  text-align: center;
+  padding: 8px 14px;
+  font-size: 9pt;
+}
 
 /* ════════════════════════════════════════
    PRINT — A4 stående
 ════════════════════════════════════════ */
 @media print {
-  /* Skjul ALT unntatt PDF-skjermen */
-  * { visibility: hidden; }
-  #pdfScreen, #pdfScreen * { visibility: visible; }
-
-  #pdfScreen {
-    display: block !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    background: none !important;
-    overflow: visible !important;
-  }
-
-  .pdf-toolbar, .pdf-info-bar { display: none !important; }
-  .pdf-scroll-area { overflow: visible !important; padding: 0 !important; }
-
   @page {
     size: A4 portrait;
-    margin: 15mm 15mm 15mm 15mm;
+    margin: 10mm;
   }
 
-  /* EPL-dokumentet fyller hele A4 med lik margin på alle sider */
-  .epl-doc {
-    width: 100% !important;
-    font-size: 10px !important;
+  html, body {
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Hide everything except PDF screen */
+  body > * { display: none !important; }
+  #pdfScreen {
     display: block !important;
-    height: calc(297mm - 30mm) !important;
-    min-height: unset !important;
-    page-break-after: avoid !important;
+    position: static !important;
+    left: auto !important;
+    top: auto !important;
+    width: 100% !important;
+    background: transparent !important;
+    padding: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    margin: 0 !important;
+  }
+  .pdf-toolbar,
+  .pdf-info-bar { display: none !important; }
+
+  .epl-doc {
+    width: 190mm !important;
+    height: 277mm !important;
+    max-height: 277mm !important;
+    overflow: hidden !important;
+    border: 2px solid #000 !important;
+    background: white !important;
+    display: flex !important;
+    flex-direction: column !important;
     page-break-inside: avoid !important;
-    box-sizing: border-box !important;
+    break-inside: avoid !important;
   }
 
-  /* Tabellen fyller hele epl-doc-høyden */
-  .epl-table {
-    height: 100% !important;
+  .epl-header-table {
+    flex-shrink: 0 !important;
+    width: 100% !important;
   }
 
-  /* Innholdscellen fyller gjenværende plass i tabellen */
-  .epl-td-content {
-    height: 100% !important;
+  .epl-content {
+    flex: 1 !important;
+    min-height: 0 !important;
   }
 
-  /* Bilder skal aldri bryte over sideskift */
-  .epl-side-row { break-inside: avoid; }
+  .epl-img-cell,
+  .epl-text-cell {
+    overflow: hidden !important;
+  }
 
-  /* Bildehøyder tilpasset A4 ved utskrift */
-  .epl-layout-side.imgs-1 .epl-side-row img { max-height: 380px !important; }
-  .epl-layout-side.imgs-2 .epl-side-row img { max-height: 260px !important; }
-  .epl-layout-side.imgs-3 .epl-side-row img { max-height: 180px !important; }
-
-  /* Sørg for at header ikke brytes */
-  .epl-header,
-  .epl-meta { break-inside: avoid; }
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 }
