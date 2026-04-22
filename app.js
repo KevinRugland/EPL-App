@@ -2,15 +2,16 @@
    KONFIGURASJON — endre her
 ════════════════════════════════════════ */
 const BEDRIFT      = 'Egenes Brannteknikk'; // ← Firmanavn i topbar
-const APP_VERSION  = 'v1.0.26';
+const APP_VERSION  = 'v1.0.27';
 
 /* ════════════════════════════════════════
    TILSTAND
 ════════════════════════════════════════ */
 let curStep = 1;
 const TOTAL  = 4;
-const imgs   = {};
-const imgData = {};
+const imgs      = {};
+const imgData   = {};
+const rotations = {};
 
 /* ════════════════════════════════════════
    INITIALISERING
@@ -157,16 +158,33 @@ function visForhåndsvisning(n) {
   const zone = document.getElementById('zone' + n);
   if (!zone) return;
   zone.style.cssText = 'margin:0;padding:0;border:none;background:none;';
+  const rot = rotations[n] || 0;
   zone.innerHTML = `
-    <img class="img-preview" src="${imgs[n]}" alt="Bilde ${n}">
+    <div class="img-preview-wrap">
+      <img class="img-preview" src="${imgs[n]}" alt="Bilde ${n}" style="transform:rotate(${rot}deg)">
+      <div class="img-rotate-btns">
+        <button class="btn-rotate" data-dir="-1" data-steg="${n}">↺</button>
+        <button class="btn-rotate" data-dir="1" data-steg="${n}">↻</button>
+      </div>
+    </div>
     <div class="img-remove" data-fjern="${n}">✕ Fjern bilde</div>`;
   zone.querySelector('.img-remove').addEventListener('click', function() {
     fjernBilde(parseInt(this.dataset.fjern));
+  });
+  zone.querySelectorAll('.btn-rotate').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const steg = parseInt(this.dataset.steg);
+      const dir = parseInt(this.dataset.dir);
+      rotations[steg] = ((rotations[steg] || 0) + dir * 90 + 360) % 360;
+      const img = document.querySelector('#zone' + steg + ' .img-preview');
+      if (img) img.style.transform = 'rotate(' + rotations[steg] + 'deg)';
+    });
   });
 }
 
 function fjernBilde(n) {
   imgs[n] = null;
+  rotations[n] = 0;
   const zone = document.getElementById('zone' + n);
   zone.style.cssText = '';
   zone.innerHTML = `
@@ -243,6 +261,14 @@ function byggOppsummering() {
 /* ════════════════════════════════════════
    EPL-DOKUMENT
 ════════════════════════════════════════ */
+function rotStyle(n) {
+  const rot = rotations[n] || 0;
+  if (!rot) return '';
+  const sideways = rot === 90 || rot === 270;
+  return 'transform:rotate(' + rot + 'deg);object-fit:contain;' +
+    (sideways ? 'max-width:none;max-height:80%;width:auto;' : '');
+}
+
 function genererEPL() {
   const tilleggChecked = document.getElementById('tilleggToggle').checked;
   const tilleggTekstEl = document.getElementById('tilleggTekst');
@@ -326,7 +352,7 @@ function genererEPL() {
     ${[0,1,2].map(i => `
       <div class="epl-img-cell${i === 2 && !tilleggTekst ? ' epl-last-row' : ''}">
         ${imgs[i+1]
-          ? `<img src="${imgs[i+1]}" class="epl-bilde" alt="Bilde ${i+1}">`
+          ? `<img src="${imgs[i+1]}" class="epl-bilde" alt="Bilde ${i+1}"${rotStyle(i+1) ? ` style="${rotStyle(i+1)}"` : ''}>`
           : `<span class="epl-ingen-bilde">Ingen bilde</span>`}
       </div>
       <div class="epl-text-cell${i === 2 && !tilleggTekst ? ' epl-last-row' : ''}">
@@ -424,7 +450,7 @@ function resetAll() {
   document.getElementById('tilleggToggle').checked = false;
   document.getElementById('tilleggTekst').value = '';
   document.getElementById('tilleggWrapper').style.display = 'none';
-  for (let i = 1; i <= 3; i++) { imgs[i] = null; imgData['cap'+i] = ''; }
+  for (let i = 1; i <= 3; i++) { imgs[i] = null; imgData['cap'+i] = ''; rotations[i] = 0; }
   document.getElementById('imgBlocks').innerHTML = '';
   updateUI();
 }
