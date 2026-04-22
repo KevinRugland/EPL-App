@@ -3,7 +3,7 @@
 // Oppdater CACHE_VERSION ved hver ny deploy
 // ════════════════════════════════════════
 
-const CACHE_VERSION = 'epl-1.0.27';
+const CACHE_VERSION = 'epl-1.0.28';
 const CACHE_FILES = [
   '/EPL-App/',
   '/EPL-App/index.html',
