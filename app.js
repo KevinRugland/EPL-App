@@ -2,7 +2,7 @@
    KONFIGURASJON — endre her
 ════════════════════════════════════════ */
 const BEDRIFT      = 'Egenes Brannteknikk'; // ← Firmanavn i topbar
-const APP_VERSION  = 'v1.0.25';
+const APP_VERSION  = 'v1.0.26';
 
 /* ════════════════════════════════════════
    TILSTAND
@@ -20,10 +20,12 @@ document.getElementById('topbarVersion').textContent = APP_VERSION;
 document.getElementById('datoOpprettet').valueAsDate = new Date();
 
 // Knytt alle knapper til funksjoner her — ingen onclick i HTML
+document.getElementById('topbarBrand').addEventListener('click', resetAll);
 document.getElementById('btnNext').addEventListener('click', goNext);
 document.getElementById('btnBack').addEventListener('click', goBack);
 document.getElementById('btnApnePDF').addEventListener('click', showPDF);
 document.getElementById('btnNyEPL').addEventListener('click', resetAll);
+document.getElementById('tilleggToggle').addEventListener('change', toggleTillegg);
 document.getElementById('btnTilbakeEndringer').addEventListener('click', function() {
   curStep = TOTAL;
   updateUI();
@@ -47,6 +49,14 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(function() { t.classList.remove('show'); }, 2800);
+}
+
+/* ════════════════════════════════════════
+   TILLEGG TOGGLE
+════════════════════════════════════════ */
+function toggleTillegg() {
+  const checked = document.getElementById('tilleggToggle').checked;
+  document.getElementById('tilleggWrapper').style.display = checked ? 'block' : 'none';
 }
 
 /* ════════════════════════════════════════
@@ -234,6 +244,10 @@ function byggOppsummering() {
    EPL-DOKUMENT
 ════════════════════════════════════════ */
 function genererEPL() {
+  const tilleggChecked = document.getElementById('tilleggToggle').checked;
+  const tilleggTekstEl = document.getElementById('tilleggTekst');
+  const tilleggTekst = tilleggChecked && tilleggTekstEl ? tilleggTekstEl.value.trim() : '';
+
   document.getElementById('eplDocOutput').innerHTML = `
 <div class="epl-doc">
 
@@ -308,17 +322,20 @@ function genererEPL() {
   </table>
 
   <!-- INNHOLD: flex: 1 -->
-  <div class="epl-content">
+  <div class="epl-content${tilleggTekst ? ' has-tillegg' : ''}">
     ${[0,1,2].map(i => `
-      <div class="epl-img-cell${i === 2 ? ' epl-last-row' : ''}">
+      <div class="epl-img-cell${i === 2 && !tilleggTekst ? ' epl-last-row' : ''}">
         ${imgs[i+1]
           ? `<img src="${imgs[i+1]}" class="epl-bilde" alt="Bilde ${i+1}">`
           : `<span class="epl-ingen-bilde">Ingen bilde</span>`}
       </div>
-      <div class="epl-text-cell${i === 2 ? ' epl-last-row' : ''}">
+      <div class="epl-text-cell${i === 2 && !tilleggTekst ? ' epl-last-row' : ''}">
         <span>${imgData['cap' + (i+1)] || ''}</span>
       </div>
     `).join('')}
+    ${tilleggTekst ? `
+      <div class="epl-tillegg-cell">${tilleggTekst.replace(/\n/g, '<br>')}</div>
+    ` : ''}
   </div>
 
 </div>`;
@@ -404,6 +421,9 @@ function resetAll() {
   if (datoG) datoG.value = '';
   document.getElementById('datoOpprettet').valueAsDate = new Date();
   document.getElementById('antallBilder').value = '3';
+  document.getElementById('tilleggToggle').checked = false;
+  document.getElementById('tilleggTekst').value = '';
+  document.getElementById('tilleggWrapper').style.display = 'none';
   for (let i = 1; i <= 3; i++) { imgs[i] = null; imgData['cap'+i] = ''; }
   document.getElementById('imgBlocks').innerHTML = '';
   updateUI();
