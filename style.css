@@ -51,7 +51,6 @@ body { background: var(--bg); font-family: var(--font); color: var(--dark); min-
 ════════════════════════════════════════ */
 .field       { margin-bottom: 14px; }
 .field label { display: block; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); margin-bottom: 5px; }
-.req         { color: var(--red); }
 
 .hint-text {
   font-size: 11px; color: var(--mid); margin-top: 5px;
