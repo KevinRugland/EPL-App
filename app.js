@@ -2,14 +2,13 @@
    KONFIGURASJON — endre her
 ════════════════════════════════════════ */
 const BEDRIFT      = 'Egenes Brannteknikk'; // ← Firmanavn i topbar
-const APP_VERSION  = 'v1.0.23';
+const APP_VERSION  = 'v1.0.24';
 
 /* ════════════════════════════════════════
    TILSTAND
 ════════════════════════════════════════ */
 let curStep = 1;
 const TOTAL  = 4;
-let layout   = 'grid';
 const imgs   = {};
 const imgData = {};
 
@@ -32,15 +31,6 @@ document.getElementById('btnTilbakeEndringer').addEventListener('click', functio
 document.getElementById('btnPrint').addEventListener('click', doPrint);
 document.getElementById('btnLukkPDF').addEventListener('click', hidePDF);
 document.getElementById('btnSendEpost').addEventListener('click', oppdaterEpostlenke);
-
-// Layout-velger
-document.querySelectorAll('.layout-opt').forEach(function(el) {
-  el.addEventListener('click', function() {
-    layout = this.dataset.layout;
-    document.querySelectorAll('.layout-opt').forEach(function(o) { o.classList.remove('selected'); });
-    this.classList.add('selected');
-  });
-});
 
 /* ════════════════════════════════════════
    HJELPEFUNKSJONER
@@ -437,9 +427,6 @@ function resetAll() {
   document.getElementById('datoOpprettet').valueAsDate = new Date();
   document.getElementById('antallBilder').value = '3';
   for (let i = 1; i <= 3; i++) { imgs[i] = null; imgData['cap'+i] = ''; }
-  layout = 'grid';
-  document.querySelectorAll('.layout-opt').forEach(function(o) { o.classList.remove('selected'); });
-  document.querySelector('[data-layout="grid"]').classList.add('selected');
   document.getElementById('imgBlocks').innerHTML = '';
   updateUI();
 }
