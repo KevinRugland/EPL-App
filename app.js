@@ -2,7 +2,7 @@
    KONFIGURASJON — endre her
 ════════════════════════════════════════ */
 const BEDRIFT      = 'Egenes Brannteknikk'; // ← Firmanavn i topbar
-const APP_VERSION  = 'v1.0.24';
+const APP_VERSION  = 'v1.0.25';
 
 /* ════════════════════════════════════════
    TILSTAND
@@ -71,7 +71,6 @@ function updateUI() {
 }
 
 function goNext() {
-  if (curStep === 1 && !validateSteg1()) return;
   if (curStep === 2) byggBildeblokker();
   if (curStep === 3) byggOppsummering();
   if (curStep === TOTAL) {
@@ -87,27 +86,6 @@ function goNext() {
 function goBack() {
   curStep--;
   updateUI();
-}
-
-/* ════════════════════════════════════════
-   VALIDERING
-════════════════════════════════════════ */
-function validateSteg1() {
-  const pakrevde = ['tittel', 'lagetAv', 'datoOpprettet'];
-  for (let i = 0; i < pakrevde.length; i++) {
-    const el = document.getElementById(pakrevde[i]);
-    if (!el || !el.value.trim()) {
-      if (el) {
-        el.focus();
-        el.style.borderColor = '#cc1515';
-        el.style.boxShadow = '0 0 0 3px rgba(204,21,21,0.15)';
-        setTimeout(function() { el.style.borderColor = ''; el.style.boxShadow = ''; }, 2500);
-      }
-      showToast('Fyll ut alle påkrevde felt');
-      return false;
-    }
-  }
-  return true;
 }
 
 /* ════════════════════════════════════════
