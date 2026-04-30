@@ -296,8 +296,10 @@ function genererEPL() {
           <span class="cell-val">${v('eplNr')}</span>
         </td>
         <td rowspan="4" class="epl-logo-cell">
-          <img src="Egenes_Brannteknikk.png" alt="Logo" class="epl-logo">
-        </td>
+           <div class="epl-logo-wrap">
+             <img src="Egenes_Brannteknikk.png" alt="Logo" class="epl-logo">
+           </div>
+         </td>
       </tr>
       <tr class="epl-header-row-2">
         <td class="epl-tittel-cell">
